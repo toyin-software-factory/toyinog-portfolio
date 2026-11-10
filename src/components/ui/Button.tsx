@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { buttonClass, type ButtonVariant, disabledButtonClass } from "./buttonStyles";
+import { cx } from "./cx";
 import { SpinnerIcon } from "./icons";
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className" | "children"> & {
@@ -32,7 +33,7 @@ export function Button({
       disabled={disabled}
       aria-busy={loading || undefined}
       aria-disabled={loading || undefined}
-      className={disabled ? disabledButtonClass : buttonClass(variant, className)}
+      className={disabled ? cx(disabledButtonClass, className) : buttonClass(variant, className)}
     >
       {loading ? <SpinnerIcon className="size-4 motion-safe:animate-spin" /> : null}
       {children}

@@ -27,6 +27,15 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
   });
 
+  it("keeps the caller's className when disabled", () => {
+    render(
+      <Button disabled className="w-full">
+        Send
+      </Button>,
+    );
+    expect(screen.getByRole("button", { name: "Send" })).toHaveClass("w-full", "bg-surface");
+  });
+
   it("marks itself busy while loading and stays focusable", () => {
     render(<Button loading>Sending</Button>);
     const button = screen.getByRole("button", { name: "Sending" });
