@@ -111,4 +111,99 @@ test.describe("/styleguide (spec 0003)", () => {
     }
     expect(seen.size).toBeGreaterThan(10);
   });
+
+  test("buttons are at least 44 by 44 and each radio row is a 44px target (AC-4)", async ({
+    page,
+  }) => {
+    const buttons = page.locator("main button:not([disabled]), main a.inline-flex");
+    expect(await buttons.count()).toBeGreaterThan(3);
+    for (const box of await buttons.evaluateAll((els) =>
+      els.map((el) => el.getBoundingClientRect()),
+    )) {
+      expect.soft(box.width).toBeGreaterThanOrEqual(44);
+      expect.soft(box.height).toBeGreaterThanOrEqual(44);
+    }
+    // The label wraps the radio, so the whole row is the touch target.
+    const rows = page.locator("main fieldset label:has(input[type=radio])");
+    expect(await rows.count()).toBeGreaterThan(1);
+    for (const height of await rows.evaluateAll((els) =>
+      els.map((el) => el.getBoundingClientRect().height),
+    )) {
+      expect.soft(height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("radio groups work with the keyboard: Tab in, arrow keys move the choice (AC-4)", async ({
+    page,
+  }) => {
+    const group = page.getByRole("group", { name: "What brings you here?" });
+    const radios = group.getByRole("radio");
+    await radios.first().focus();
+    await expect(radios.first()).toBeChecked();
+    await page.keyboard.press("ArrowDown");
+    await expect(radios.nth(1)).toBeChecked();
+    await expect(radios.nth(1)).toBeFocused();
+    await page.keyboard.press("ArrowUp");
+    await expect(radios.first()).toBeChecked();
+  });
+
+  test("with reduced motion nothing animates; otherwise colours ease over 150ms (AC-5)", async ({
+    page,
+  }) => {
+    const button = page.locator("main button:not([disabled])").first();
+    const timing = () =>
+      button.evaluate((el) => {
+        const style = getComputedStyle(el);
+        return `${style.transitionProperty} ${style.transitionDuration}`;
+      });
+
+    expect(await timing()).toMatch(/color.* 0\.15s/);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    expect(await timing()).toMatch(/^(none|all) 0s$/);
+  });
+
+  test("Prose keeps a 42rem reading width and styles Markdown with tokens (AC-8)", async ({
+    page,
+  }) => {
+    const prose = page.locator("main .prose").first();
+    const styles = await prose.evaluate((el) => {
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const token = (name: string) => {
+        const probe = document.createElement("span");
+        probe.style.color = `var(${name})`;
+        document.body.appendChild(probe);
+        const value = getComputedStyle(probe).color;
+        probe.remove();
+        return value;
+      };
+      const pick = (selector: string) => {
+        const found = el.querySelector(selector);
+        return found ? getComputedStyle(found) : null;
+      };
+      return {
+        maxWidthRem: parseFloat(getComputedStyle(el).maxWidth) / rem,
+        link: pick("a")?.color,
+        accent: token("--color-accent"),
+        blockquoteBorder: pick("blockquote")?.borderLeftColor,
+        codeBackground: pick("pre")?.backgroundColor,
+        surface: (() => {
+          const probe = document.createElement("span");
+          probe.style.backgroundColor = "var(--color-surface)";
+          document.body.appendChild(probe);
+          const value = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return value;
+        })(),
+        h2Font: pick("h2")?.fontFamily,
+        listStyle: pick("ul")?.listStyleType,
+      };
+    });
+
+    expect(styles.maxWidthRem).toBe(42);
+    expect(styles.link).toBe(styles.accent);
+    expect(styles.blockquoteBorder).toBe(styles.accent);
+    expect(styles.codeBackground).toBe(styles.surface);
+    expect(styles.h2Font).toMatch(/Instrument Serif/i);
+    expect(styles.listStyle).toBe("disc");
+  });
 });

@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Design system: Toyin's palette, the Instrument Serif and Inter type scale, spacing and radii as Tailwind tokens in one place, with a test that blocks raw colour values in components and pages (see spec 0003).
+- Base components in `src/components/ui/` (layout, headings, Prose for Markdown, links, buttons, badge, tag, card, skip link and form fields), each with a visible lemon focus ring, keyboard support and 44px touch targets (see spec 0003).
+- A preview only `/styleguide` page showing every token and component in its states; it returns 404 in production and stays out of search (see spec 0003).
+- Self hosted fonts: no request to a font host at runtime (see spec 0003).
+- Site skeleton: Next.js on Cloudflare Workers through OpenNext, with security headers, `robots.txt` and a sitemap (see spec 0001).
+- CI on every pull request: lint, format, typecheck, content check, unit tests, the Workers build, a 3 MiB Worker size gate, and Playwright end to end tests with axe on the real Workers runtime, at desktop and phone widths (see spec 0001).
+- Every pull request gets a preview deployment through Cloudflare Workers Builds; `main` deploys to production. Previews never send email and show draft content (see spec 0001).
 - Work page at `/work`: every published project as a card grid in Toyin's chosen order (see spec 0005).
 - A case study page for each project at `/work/<slug>`, with the title, summary, role, client, year, tags, project links, the cover, the case study text and a "Next project" link. Each page has its own title, description and share image (see spec 0005).
 - `/work` and every case study are in the sitemap. Adding a Markdown file to `content/work/` adds the card, the page and the sitemap entry on the next build, with no code change (see spec 0005).

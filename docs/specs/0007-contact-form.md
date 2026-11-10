@@ -1,7 +1,7 @@
 # 0007. Contact form with Email Routing, Turnstile and rate limiting
 
 **Date**: 2026-11-10
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 
@@ -66,7 +66,7 @@ Lead calls (each with the runner up): message minimum 20 characters to cut "hi" 
 4. Rate limit on `CF-Connecting-IP`. If over the limit return `{ status: 'rate_limited', values }` (AC-6).
 5. Not production: log the dry run, set the cookie, redirect (AC-8, AC-10).
 6. Build the MIME message with `mimetext` and call `env.SEND_EMAIL.send(new EmailMessage(from, to, raw))`. On error return `{ status: 'send_failed', values }` and log (AC-9).
-7. Set the cookie and redirect to `/contact/sent` (AC-10). The page itself is static; `src/middleware.ts` gates it. A request without the `contact_sent` cookie gets a 307 to `/contact`. A request with it passes through, marked `private, no-store`, and that response deletes the cookie. Next renders the redirect target inside the action's own response, so the middleware sees the next request to `/contact/sent`, not the first view: a reload within the 60 seconds shows the page once more and clears the cookie. Edge middleware (`middleware.ts`), not Next 16's `proxy.ts`, because `@opennextjs/cloudflare` runs proxy on the Node runtime, which it marks experimental on workerd.
+7. Set the cookie and redirect to `/contact/sent` (AC-10). The page itself is static; `src/middleware.ts` gates it. A request without the `contact_sent` cookie gets a 307 to `/contact`. A request with it passes through, marked `private, no-store`, and that response deletes the cookie. When Next renders the redirect target inside the action's own response, the middleware sees only the next request to `/contact/sent`, so a reload within the 60 seconds can show the page once more; that request clears the cookie. Edge middleware (`middleware.ts`), not Next 16's `proxy.ts`, because `@opennextjs/cloudflare` runs proxy on the Node runtime, which it marks experimental on workerd.
 
 **Value sourcing**:
 | Action | Value | Source |
