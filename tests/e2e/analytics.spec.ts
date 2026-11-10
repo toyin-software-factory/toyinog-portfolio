@@ -12,7 +12,7 @@ const BEACON = "https://static.cloudflareinsights.com/beacon.min.js";
 const token = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN?.trim() ?? "";
 const isProductionStyle = process.env.APP_ENV === "production" && token !== "";
 
-const PAGES = ["/", "/work", "/contact", "/does-not-exist"];
+const PAGES = ["/", "/work", "/about", "/contact", "/does-not-exist"];
 
 /** Collects CSP violations from the page (event) and the console (Chromium's report). */
 const watchCsp = async (page: Page): Promise<() => Promise<readonly string[]>> => {
