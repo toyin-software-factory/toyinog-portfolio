@@ -30,6 +30,7 @@ Home is where both audiences land, hiring managers and clients, so it must say w
 - **AC-9**: The site has a styled `not-found` page (in the shell) with an `h1` "Page not found" and links to Home and Work, returning HTTP 404.
 - **AC-10**: The root metadata sets a title template `%s · <name>`, a default title "<name> · <headline>", and a default description from `intro`, all from `getProfile()`. Home is statically generated (prebuilt HTML, added to `tests/e2e/static.spec.ts`).
 - **AC-11**: axe reports zero WCAG 2.2 AA violations on `/` and the 404 page at 390 and 1440 widths, and the headings form a valid outline (one `h1`, `h2` per section).
+- **AC-12** (added 2026-11-10): The root layout and every shared shell component get profile values (name, headline, intro, links) from a module generated at build time from `content/pages/profile.md`, never by calling the file reading loader in `src/lib/content/`. A dynamic route (one rendered at request time on Workers) therefore renders the shell with no file access. Checked by an e2e test against `pnpm preview` that requests a small dynamic test route (preview only) and gets 200 with the header and footer.
 
 ## Options considered
 
@@ -99,6 +100,7 @@ Skateboard: shell first (every later page needs it), then Home top to bottom.
 3. Home hero and Selected work, satisfies **AC-5**, **AC-6**
 4. About teaser (with the first paragraph helper and its unit test) and the contact CTA, satisfies **AC-7**, **AC-8**
 5. Playwright: navigation, phone layout, empty state, 404, axe at 390 and 1440, and the static route check, satisfies **AC-2**, **AC-3**, **AC-10**, **AC-11**
+6. (Added after build) A build step writes the shell's profile values to a generated module that the layout imports, plus the dynamic route e2e check, satisfies **AC-12**
 
 ## Consequences
 
@@ -111,5 +113,7 @@ Skateboard: shell first (every later page needs it), then Home top to bottom.
 **Neutral**: `/work`, `/about` and `/contact` 404 until their tasks ship. The nav links still render (Skateboard: the shell is whole first).
 
 ## Follow-up
+
+- [ ] AC-12 (task RR1-T05). Found in RR1-T04: the root layout called `getProfile()`, which reads `content/` with `node:fs`. That works on prerendered pages but returns 500 on any dynamic route on Workers (it broke `/contact/sent`), against spec 0002 AC-10. RR1-T04 works around it with a middleware cookie gate, so this fix protects future dynamic routes and server action responses.
 
 - [ ] Full SEO (share cards, structured data, sitemap entries) is scope feature 9.
