@@ -21,7 +21,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 5 | Site shell & Home | Release 1 | in-progress |
 | 6 | Work list & case studies | Release 1 | in-progress |
 | 7 | About & CV | Release 1 | in-progress |
-| 8 | Contact form | Release 1 | planned |
+| 8 | Contact form | Release 1 | in-progress |
 | 9 | SEO & social sharing | Release 2 | planned |
 | 10 | Visitor analytics | Release 2 | planned |
 | 11 | Real content & go live | Release 2 | planned |
@@ -118,10 +118,21 @@ Bio, experience, skills and a CV download, for hiring managers who want the full
 - [ ] Document it: `/document about & cv`
 Spec [0006](../specs/0006-about-cv.md)
 
-### 8. Contact form · needs a decision
+### 8. Contact form · in-progress
 A form (name, email, hiring or project, message) that emails Toyin, with spam protection. Links to email and profiles sit beside it.
 **Done when:** a valid submission reaches Toyin's inbox with the hiring or project choice, input is validated on the server, spam and repeat submissions are blocked, and the visitor sees clear success and error states. No keys reach the browser.
-- [ ] Design it (spec): `/architect contact form`
+- [x] Design it (spec): `/architect contact form`
+- [ ] Build it: `/develop contact form`
+   - [ ] Schema and static form page (AC-1, AC-2, AC-11)
+   - [ ] Server action: honeypot, validation, error summary (AC-3, AC-4)
+   - [ ] Turnstile and rate limit (AC-5, AC-6)
+   - [ ] Email send, dry run, failure handling, logging (AC-7..9, AC-12)
+   - [ ] Sent page and Playwright with axe (AC-10, AC-13)
+- [ ] Verify it: `/check verify contact form`
+- [ ] Test it: `/test contact form`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document contact form`
+Spec [0007](../specs/0007-contact-form.md)
 
 ## Release 2: launch ready
 
