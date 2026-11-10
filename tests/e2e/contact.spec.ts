@@ -145,3 +145,9 @@ test("without JavaScript the page explains why and shows the email (AC-11)", asy
   expect(noscript).toContain("This form needs JavaScript for its spam check.");
   expect(noscript).toMatch(/You can email me at \S+@\S+/);
 });
+
+test("the sitemap lists /contact but not /contact/sent (AC-10)", async ({ request }) => {
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  expect(sitemap).toContain("<loc>https://toyinog.com/contact</loc>");
+  expect(sitemap).not.toContain("/contact/sent");
+});

@@ -128,10 +128,10 @@ A form (name, email, hiring or project, message) that emails Toyin, with spam pr
    - [x] Turnstile and rate limit (AC-5, AC-6)
    - [x] Email send, dry run, failure handling, logging (AC-7..9, AC-12)
    - [x] Sent page and Playwright with axe (AC-10, AC-13)
-- [ ] Verify it: `/check verify contact form`
-- [ ] Test it: `/test contact form`
+- [x] Verify it: `/check verify contact form`
+- [x] Test it: `/test contact form`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document contact form`
+- [x] Document it: `/document contact form`
 Spec [0007](../specs/0007-contact-form.md) · code in `src/app/contact/`, `src/lib/contact/`
 
 ## Release 2: launch ready
