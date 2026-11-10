@@ -16,7 +16,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | done |
-| 3 | Content model | Foundation | in-progress |
+| 3 | Content model | Foundation | done |
 | 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Site shell & Home | Release 1 | in-progress |
 | 6 | Work list & case studies | Release 1 | in-progress |
@@ -42,7 +42,7 @@ Capture conventions and tooling choices from the real scaffolded project into ro
 - [x] Capture conventions + tooling choices: `/audit`
 - [x] Install the tooling: `/develop tooling`
 
-### 3. Content model · in-progress
+### 3. Content model · done
 The shape of the Markdown content files: projects and case studies, the bio, experience, skills, links, and the CV file. Every page reads from it, and Toyin edits it to update the site.
 **Done when:** each content type has a validated schema, a malformed file fails the build with a clear message, and placeholder files exist for every type.
 - [x] Design it (spec): `/architect content model`
@@ -52,10 +52,10 @@ The shape of the Markdown content files: projects and case studies, the bio, exp
    - [x] Placeholder content, assets and content README (AC-8)
    - [x] Fixture tests and `content:check` in CI (AC-3..7)
 - [x] Verify it: `/check verify content model`
-- [ ] Test it: `/test content model`
-- [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document content model`
-Spec [0002](../specs/0002-content-model.md) · code in `src/lib/content/`, `content/`
+- [x] Test it: `/test content model`
+- [x] Review it: CodeRabbit on the PR (#16)
+- [x] Document it: `/document content model`
+Spec [0002](../specs/0002-content-model.md) · code in `src/lib/content/`, `content/` · verify report [docs/reviews/2026-11-10-verify-content-model.md](../reviews/2026-11-10-verify-content-model.md)
 
 ### 4. Design system & UI foundation · in-progress
 Visual direction from Mobbin references, plus type, colour, spacing and base components, so all four pages feel like one site and meet WCAG AA.
@@ -80,15 +80,15 @@ All four pages working end to end on placeholder content, deployed to a preview 
 Shared header, navigation, footer and page layout, plus the Home page: who Toyin is, what Toyin does, featured work, and a clear call to action for both hiring managers and clients.
 **Done when:** every page shares the shell, navigation works by keyboard and on mobile, and Home shows the intro, featured projects from the content files, and links to Work and Contact.
 - [x] Design it (spec): `/architect site shell & home`
-- [ ] Build it: `/develop site shell & home`
-   - [ ] Shell: header, nav, footer, metadata, 404 (AC-1..4, AC-9, AC-10)
-   - [ ] Home sections: hero, selected work, about teaser, CTA (AC-5..8)
-   - [ ] Playwright, phone layout, axe, static check (AC-2, AC-3, AC-10, AC-11)
-- [ ] Verify it: `/check verify site shell & home`
-- [ ] Test it: `/test site shell & home`
+- [x] Build it: `/develop site shell & home`
+   - [x] Shell: header, nav, footer, metadata, 404 (AC-1..4, AC-9, AC-10)
+   - [x] Home sections: hero, selected work, about teaser, CTA (AC-5..8)
+   - [x] Playwright, phone layout, axe, static check (AC-2, AC-3, AC-10, AC-11)
+- [x] Verify it: `/check verify site shell & home`
+- [x] Test it: `/test site shell & home`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document site shell & home`
-Spec [0004](../specs/0004-site-shell-home.md)
+- [x] Document it: `/document site shell & home`
+Spec [0004](../specs/0004-site-shell-home.md) · code in `src/components/site/`, `src/app/_home/`, `src/app/layout.tsx` · verify report [docs/reviews/2026-11-10-verify-site-shell-home.md](../reviews/2026-11-10-verify-site-shell-home.md)
 
 ### 6. Work list & case studies · in-progress
 A list of projects and one case study page per project, generated from the content files.
