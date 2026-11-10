@@ -12,6 +12,9 @@ import CaseStudyPage, {
 } from "./[slug]/page";
 import WorkPage, { metadata } from "./page";
 
+/** Project text comes from content files, so escape it before building a RegExp. */
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const renderCaseStudy = async (slug: string) =>
   render(await CaseStudyPage({ params: Promise.resolve({ slug }) }));
 
@@ -72,10 +75,9 @@ describe("case study route (spec 0005)", () => {
     expect(cover).not.toHaveAttribute("loading", "lazy");
     expect(screen.getByRole("heading", { level: 2, name: "Problem" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Outcome" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: new RegExp(second.title) })).toHaveAttribute(
-      "href",
-      `/work/${second.slug}`,
-    );
+    expect(
+      screen.getByRole("link", { name: new RegExp(escapeRegExp(second.title)) }),
+    ).toHaveAttribute("href", `/work/${second.slug}`);
     expect(screen.getByRole("link", { name: "Back to all work" })).toHaveAttribute("href", "/work");
   });
 

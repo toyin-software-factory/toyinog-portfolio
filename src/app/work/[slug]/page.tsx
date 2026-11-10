@@ -8,6 +8,9 @@ import { getProject, getProjects, getProjectSlugs } from "@/lib/content";
 import { CaseStudyHeader } from "./_components/CaseStudyHeader";
 import { NextProject, nextProjectOf } from "./_components/NextProject";
 
+/** Prebuilt HTML only: Workers can't read content/ at request time (spec 0001). */
+export const dynamic = "force-static";
+
 /** Only the slugs known at build time exist; anything else is the 404 page (spec 0005, AC-3). */
 export const dynamicParams = false;
 

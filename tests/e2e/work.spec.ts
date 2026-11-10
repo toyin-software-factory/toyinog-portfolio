@@ -4,6 +4,9 @@ import { expect, test } from "@playwright/test";
 import { loadContent } from "../../src/lib/content/load";
 import { getAppEnv } from "../../src/lib/env";
 
+/** Project text comes from content files, so escape it before building a RegExp. */
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const WCAG_AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 // The same projects, in the same order, as the build under test.
@@ -62,10 +65,9 @@ test.describe("case study (spec 0005)", () => {
     await expect(facts.locator("dt")).toContainText(["Role", "Year", "Tags"]);
     await expect(facts).toContainText(first.role);
     for (const link of first.links) {
-      await expect(page.getByRole("link", { name: new RegExp(link.label) })).toHaveAttribute(
-        "rel",
-        "noopener noreferrer",
-      );
+      await expect(
+        page.getByRole("link", { name: new RegExp(escapeRegExp(link.label)) }),
+      ).toHaveAttribute("rel", "noopener noreferrer");
     }
     const cover = page.getByRole("img", { name: first.cover.alt });
     await expect(cover).toHaveAttribute("width", /\d+/);
@@ -88,12 +90,14 @@ test.describe("case study (spec 0005)", () => {
     page,
   }) => {
     await page.goto(`/work/${first.slug}`);
-    await page.getByRole("link", { name: new RegExp(`Next project\\s*${second.title}`) }).click();
+    await page
+      .getByRole("link", { name: new RegExp(`Next project\\s*${escapeRegExp(second.title)}`) })
+      .click();
     await expect(page).toHaveURL(`/work/${second.slug}`);
 
     await page.goto(`/work/${last.slug}`);
     await expect(
-      page.getByRole("link", { name: new RegExp(`Next project\\s*${first.title}`) }),
+      page.getByRole("link", { name: new RegExp(`Next project\\s*${escapeRegExp(first.title)}`) }),
     ).toHaveAttribute("href", `/work/${first.slug}`);
 
     await page.getByRole("link", { name: "Back to all work" }).click();
@@ -109,7 +113,7 @@ test.describe("case study (spec 0005)", () => {
     );
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      new RegExp(`${first.cover.src}$`),
+      new RegExp(`${escapeRegExp(first.cover.src)}$`),
     );
   });
 
