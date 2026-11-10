@@ -16,7 +16,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | planned |
-| 3 | Content model | Foundation | planned |
+| 3 | Content model | Foundation | in-progress |
 | 4 | Design system & UI foundation | Foundation | planned |
 | 5 | Site shell & Home | Release 1 | planned |
 | 6 | Work list & case studies | Release 1 | planned |
@@ -41,10 +41,20 @@ Capture conventions and tooling choices from the real scaffolded project into ro
 **Done when:** root `AGENTS.md` reflects the real stack and its commands, and lint, format and typecheck run clean in CI.
 - [ ] Capture conventions + tooling choices: `/audit`
 
-### 3. Content model · needs a decision
+### 3. Content model · in-progress
 The shape of the Markdown content files: projects and case studies, the bio, experience, skills, links, and the CV file. Every page reads from it, and Toyin edits it to update the site.
 **Done when:** each content type has a validated schema, a malformed file fails the build with a clear message, and placeholder files exist for every type.
-- [ ] Design it (spec): `/architect content model`
+- [x] Design it (spec): `/architect content model`
+- [ ] Build it: `/develop content model`
+   - [ ] Schemas, loader and collection rules (AC-1..6, AC-9, AC-10)
+   - [ ] Markdown rendering pipeline (AC-7)
+   - [ ] Placeholder content, assets and content README (AC-8)
+   - [ ] Fixture tests and `content:check` in CI (AC-3..7)
+- [ ] Verify it: `/check verify content model`
+- [ ] Test it: `/test content model`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document content model`
+Spec [0002](../specs/0002-content-model.md)
 
 ### 4. Design system & UI foundation · needs a decision
 Visual direction from Mobbin references, plus type, colour, spacing and base components, so all four pages feel like one site and meet WCAG AA.
