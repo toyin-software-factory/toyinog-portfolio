@@ -61,16 +61,16 @@ Spec [0002](../specs/0002-content-model.md) · code in `src/lib/content/`, `cont
 Visual direction from Mobbin references, plus type, colour, spacing and base components, so all four pages feel like one site and meet WCAG AA.
 **Done when:** `design.md` records the direction and its Mobbin references, covers type, colour, spacing and components, and base components handle focus, keyboard and contrast at mobile and desktop widths.
 - [x] Design it (spec): `/architect design system & UI foundation`
-- [ ] Build it: `/develop design system & UI foundation`
-   - [ ] Tokens, fonts and root layout base (AC-1, AC-2, AC-5)
-   - [ ] Layout, text and action components (AC-3, AC-4, AC-8)
-   - [ ] Form primitives (AC-3, AC-4)
-   - [ ] Styleguide route, token guard, axe at both widths (AC-1, AC-6, AC-7)
+- [x] Build it: `/develop design system & UI foundation`
+   - [x] Tokens, fonts and root layout base (AC-1, AC-2, AC-5)
+   - [x] Layout, text and action components (AC-3, AC-4, AC-8)
+   - [x] Form primitives (AC-3, AC-4)
+   - [x] Styleguide route, token guard, axe at both widths (AC-1, AC-6, AC-7)
 - [ ] Verify it: `/check verify design system & UI foundation`
 - [ ] Test it: `/test design system & UI foundation`
 - [ ] Review it: CodeRabbit on the PR
 - [ ] Document it: `/document design system & UI foundation`
-Spec [0003](../specs/0003-design-system.md) · `design.md`
+Spec [0003](../specs/0003-design-system.md) · `design.md` · code in `src/components/ui/`, `src/app/styleguide/`
 
 ## Release 1: the smallest usable site
 
