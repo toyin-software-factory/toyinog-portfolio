@@ -22,6 +22,13 @@ Site shell and Home references (spec 0004):
 - Vucko, footer with links, socials, back to top and copyright: https://mobbin.com/sites/sections/325d9889-5eae-493d-926a-a959e8e99005
 - Garden, a minimal 404 message inside the site shell: https://mobbin.com/sites/sections/40e8ba24-cbb3-4a8d-af53-82df888230cf
 
+Work list and case study references (spec 0005):
+- MOUTHWASH Studio, "All Work" heading over a three column project grid: https://mobbin.com/sites/sections/5ed7b943-1b00-4ccf-bfe3-50897107642b
+- basement.studio, dark showcase grid of covers: https://mobbin.com/sites/sections/ada390ad-f606-421f-b096-c569f72a2146
+- Tailscale, case study with title, tags, a wide cover and a side list of facts: https://mobbin.com/sites/sections/84f94fa1-216c-40e9-aa21-d4b6e8039f5b
+- Nite Riot, large project title beside a credits list: https://mobbin.com/sites/sections/d8c6801c-2eaa-48ed-b55b-5c74d0042347
+- Whereby, serif case study headline with a short intro: https://mobbin.com/sites/sections/8f8404c1-8369-4a31-8adc-eac383f475d9
+
 ## Colour
 
 Toyin's palette: Dust Grey `#D6D6D6`, Bright Lemon `#FFEE32`, Bright Amber `#FFD100`, Carbon Black `#202020`, Graphite `#333533`. Three helper greys and an error red were added only to meet WCAG AA.

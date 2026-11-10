@@ -1,8 +1,8 @@
-# /check verify content model · PASS, AC-4 partly pending
+# /check verify content model · PASS
 
 **Date**: 2026-11-10 · **Spec**: [0002](../specs/0002-content-model.md) · **Scope**: feature 3 · **Run by**: Dwight, during RR1-T01
 
-**9 of 10 acceptance criteria met on the real app and content. AC-4 is partly verified.** The loader part is verified: drafts are filtered out in production and kept, flagged, in preview. The other part, keeping drafts out of the static `/work/<slug>` routes and the sitemap, is pending. Neither surface exists yet; they come with Work (RR1-T02) and the sitemap work. Spec 0002 stays `In Progress` until that check passes.
+**PASS: all 10 acceptance criteria met on the real app and content.** AC-4 was partly verified on the first run (the routes and sitemap didn't exist yet). It was completed in RR1-T02 on a production build; see [AC-4 re-run](#ac-4-re-run-rr1-t02-2026-11-10) below.
 
 Next: `/test content model` for any gaps, then `/document`.
 
@@ -20,7 +20,7 @@ Next: `/test content model` for any gaps, then `/document`.
 | AC-1 | met | Probe: 4 projects parsed, slugs from filenames (`design-system`, `checkout-redesign`, `analytics-dashboard`, `marketing-site`), typed fields `title, summary, role, client, year, tags, cover, links, featured, order, draft, slug, body, html`. |
 | AC-2 | met | Probe: profile has `name, headline, intro, location, availability, links, email`. About has 3 experience entries, 3 skill groups and a CV. |
 | AC-3 | met | Broken content: `content:check`, `pnpm build` and `pnpm test` all exit 1. One message names each file and field in plain words, for example `content/pages/profile.md · headline: should be text, but it is the number 42`, `locaton: is not a known field. Check the spelling, or remove it`, `cv.file: points to a file that does not exist`, `cv.updated: should be a month written as YYYY-MM`. The build fails while prerendering `/` with the same `ContentError`. |
-| AC-4 | partly verified: loader met, routes and sitemap pending RR1-T02 | `APP_ENV=production pnpm content:check` gives `3 projects visible`. `APP_ENV=preview` gives `4 projects visible (1 draft)`. The probe shows `marketing-site` with `draft true` in preview. Pending: no `/work/<slug>` routes and no project sitemap entries exist yet, so draft exclusion there cannot be observed. Repeat this check in RR1-T02, and when projects join the sitemap. |
+| AC-4 | met | Loader: `APP_ENV=production pnpm content:check` gives `3 projects visible`. `APP_ENV=preview` gives `4 projects visible (1 draft)`. The probe shows `marketing-site` with `draft true` in preview. Routes and sitemap: see the re-run below. |
 | AC-5 | met | Probe order: design-system (order 1), checkout-redesign (2), analytics-dashboard (3), marketing-site (4). Featured: the first three, same order. |
 | AC-6 | met | Turning the draft into a 4th featured project fails with `featured: 4 published projects are featured (…), but at most 3 can be`. Duplicate slugs can't be produced from real filenames (the slug is the filename), so that path is covered by the fixture test in `load.test.ts` (passing in this run). |
 | AC-7 | met | `renderMarkdown()` output: `<h2 id="hello-world">`; the external link gets `rel="noopener noreferrer"`; the site's own link doesn't; the `javascript:` link loses its `href`; `<script>` is dropped and `<b>raw</b>` comes out as plain `raw`. |
@@ -34,3 +34,18 @@ Spec surfaces: loader, schemas, Markdown pipeline, placeholder content, the `con
 
 - A bad `https` URL gives two messages for one field (`should be a full web address` and `should be a web address starting with https://`). That's clear enough, but one message would read better.
 - `pnpm build` prints the `ContentError` twice: once in the friendly format, and once as the raw object Next.js logs. The friendly one comes first.
+
+## AC-4 re-run (RR1-T02, 2026-11-10)
+
+The pending part of AC-4: drafts kept out of the static `/work/<slug>` routes and the sitemap in production.
+
+- Built with `APP_ENV=production pnpm preview` (OpenNext on the local Workers runtime, port 8787) on branch `rr1-t02`.
+- `curl localhost:8787/work/marketing-site` (the draft) gives `404`. `/work/design-system` and `/work` give `200`.
+- `/work` links only `analytics-dashboard`, `checkout-redesign` and `design-system`.
+- `/sitemap.xml` lists `/`, `/work` and the three published case studies, and not `marketing-site`.
+- The build's prerendered route cache holds `/work`, `/work/analytics-dashboard`, `/work/checkout-redesign` and `/work/design-system` only.
+- The preview build (`APP_ENV=preview`, what CI runs) includes the draft. `tests/e2e/static.spec.ts` covers it as a prerendered route, so previews still show drafts.
+- Unit: `src/app/work/addProject.test.tsx` checks a draft fixture is left out of `/work`, the static params and the sitemap in production, and is included in preview.
+
+Result: met. AC-4 is fully verified.
+

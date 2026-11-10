@@ -1,8 +1,8 @@
-# /check verify site shell & home · PASS, AC-2 partly pending
+# /check verify site shell & home · PASS
 
 **Date**: 2026-11-10 · **Spec**: [0004](../specs/0004-site-shell-home.md) · **Scope**: feature 5 · **Run by**: Dwight, RR1-T01
 
-**10 of 11 acceptance criteria met, every specced surface built. AC-2 is partly verified.** Home (no current link) and the matching rule are verified. Seeing Work marked current on real `/work` and `/work/<slug>` pages is pending RR1-T02: `/work` and `/work/<slug>` come with feature 6. Until then those URLs serve the prebuilt 404, and Next.js loads them as full pages, so no link is current there. The matching rule (`/work/<slug>` counts as Work) is proven by unit tests. The e2e check for those two paths skips while they return 404 and starts running by itself once they ship.
+**PASS: all 11 acceptance criteria met, every specced surface built.** AC-2 was partly verified on the first run, because the Work pages didn't exist yet. It was completed in RR1-T02; see [AC-2 re-run](#ac-2-re-run-rr1-t02-2026-11-10) below.
 
 Next: `/sync`.
 
@@ -18,7 +18,7 @@ Next: `/sync`.
 | AC | Result | Evidence |
 |---|---|---|
 | AC-1 | met | e2e `header, Main nav, main and footer are in order` (`body > header + main#main + footer`) and `tab order is skip link, name, Work, About, Contact, then main`, both widths. |
-| AC-2 | partly verified: Home and unit met, real Work pages pending RR1-T02 | e2e `no nav link is marked current on Home`. Unit `site.test.tsx`: Work gets `aria-current="page"` on `/work` and `/work/design-system`, not on `/workshop`. The lemon underline class is applied only to the current link. The browser check on real Work pages waits for feature 6 (see above). |
+| AC-2 | met | e2e `no nav link is marked current on Home`. Unit `site.test.tsx`: Work gets `aria-current="page"` on `/work` and `/work/design-system`, not on `/workshop`. Real Work pages: see the re-run below. |
 | AC-3 | met | e2e at 390: no sideways scroll, no button in the banner, every header link at least 44 by 44 px, banner at most two rows. Mobile screenshot: name on the first row, three links on the second. |
 | AC-4 | met | e2e: LinkedIn and GitHub have `rel="noopener noreferrer"`, Email is `mailto:`, `© 2026 Toyin Ogunseinde`, and Back to top focuses `header#top`; the next Tab lands on the name link. The video shows it. |
 | AC-5 | met | e2e `hero shows the badge and both actions`; unit tests for all four availability values (badge hidden for `none`). |
@@ -35,3 +35,10 @@ Spec surfaces: `layout.tsx` shell and metadata, `Header`, `NavLinks`, `Footer`, 
 
 - Selected work tags sit under each `Card` in the same list item, not inside the card, because `Card` has no slot for them. If cards elsewhere need tags too, a `children` or `tags` slot on `Card` (owned by `src/components/ui/`) would be tidier.
 - The 404 page is prebuilt once, so the nav never shows a current link there, even under `/work/…`. That's fine for a 404.
+
+## AC-2 re-run (RR1-T02, 2026-11-10)
+
+With `/work` and `/work/<slug>` built, the e2e checks `Work is marked current on /work` and `Work is marked current on /work/design-system` (in `tests/e2e/shell.spec.ts`) run instead of skipping. They pass at 1440 and 390: Work has `aria-current="page"` and the underline, and About doesn't. `tests/e2e/work.spec.ts` checks the same on a case study. The RR1-T02 case study screenshot shows the lemon underline under Work. Full run: 78 passed, 0 skipped.
+
+Result: met. AC-2 is fully verified.
+
