@@ -1,7 +1,7 @@
 # 0001. Next.js on Cloudflare Workers as the portfolio stack
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
