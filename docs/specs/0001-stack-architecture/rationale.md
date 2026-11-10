@@ -2,7 +2,7 @@
 
 ## Context
 
-> ⚠️ Premise note: Cloudflare Email Routing only works if toyinog.com's mail (MX) records point at Cloudflare. If Toyin already receives mail at @toyinog.com through another provider, turning on Email Routing would cut off that inbox. This was asked twice and is still unanswered. It does not block the scaffold, but it must be answered before the contact form goes live. If the domain already has a mail provider, the contact feature should switch to an email API that does not need the MX records.
+> Resolved premise (2026-11-10): Cloudflare Email Routing only works if toyinog.com's mail (MX) records point at Cloudflare. Toyin confirmed that toyinog.com is already in Toyin's Cloudflare account and that nothing receives mail at @toyinog.com today, so Email Routing can be turned on without breaking an inbox.
 
 toyinog.com is a personal portfolio for two audiences, hiring managers and freelance clients. It has four pages (Home, Work with case studies, About with a CV download, Contact), and it must launch in about a month (around 2026-12-10). It is built by a small agent team under a GA workflow (verify, tests, CodeRabbit review, docs), and every PR needs preview proof at desktop and mobile widths.
 

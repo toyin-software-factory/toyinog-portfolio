@@ -135,7 +135,7 @@ Required checks on `main` (branch protection, a Toyin action): `ci` and the Work
 
 **Negative / tradeoffs**:
 - Next.js on Workers goes through an adapter. Some Next.js features lag or need workarounds (no built in image optimization, and the Node.js API surface is limited to Workers compatibility). Pin versions that OpenNext supports, and upgrade Next.js only after checking OpenNext's support.
-- Email Routing requires toyinog.com's MX records on Cloudflare. If Toyin already receives mail at @toyinog.com through another provider, switching would break that inbox. This must be resolved before go live (see Follow-up).
+- Email Routing takes over toyinog.com's MX records. That's safe today (Toyin confirmed the domain is on Cloudflare and receives no mail), but adding a mailbox provider for @toyinog.com later would have to coexist with Email Routing or replace it.
 - Email Routing's `send_email` binding sends only to verified addresses. That fits a contact form, but the deferred auto reply to visitors would need Cloudflare's newer email sending service or a different provider (check the current docs then). Deliverability to Gmail and Outlook must be tested before launch.
 - Cloudflare Web Analytics has no custom events, so conversions are approximated by a page view of `/contact/sent`. The contact spec makes that page `noindex` and reachable only right after a successful send, so direct visits don't inflate the count. The hiring vs project split shows in the emails, not in analytics.
 - The rate limiter is approximate (counted per Cloudflare location), so it slows floods but is not a hard guarantee.
@@ -147,7 +147,7 @@ Required checks on `main` (branch protection, a Toyin action): `ci` and the Work
 
 ## Follow-up
 
-- [ ] Before the contact form is built (not at go live): confirm with Toyin whether toyinog.com DNS is already on Cloudflare and whether anything receives mail at @toyinog.com today. Email Routing, the custom domain and Turnstile all need the zone on Cloudflare, and Email Routing takes over the MX records.
+- [x] DNS and mail check (2026-11-10): toyinog.com is already in Toyin's Cloudflare account and receives no mail today, so Email Routing can take over the MX records safely.
 - [ ] Toyin action at scaffold time: create or confirm the Cloudflare account, connect the GitHub repo through Workers Builds with the settings above, enable preview URLs, and set branch protection on `main`.
 - [ ] If the CI size gate fails on the Free plan (likely for Next.js on Workers), Toyin decides whether to upgrade to Workers Paid (about 5 USD a month). The scaffold PR reports the measured bundle size.
 - [ ] Toyin action at contact form time: enable Email Routing on toyinog.com, verify the destination inbox, and create the Turnstile widget.
