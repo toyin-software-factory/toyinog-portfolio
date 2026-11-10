@@ -15,7 +15,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
-| 2 | Coding standards & tooling | Foundation | planned |
+| 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | in-progress |
 | 4 | Design system & UI foundation | Foundation | planned |
 | 5 | Site shell & Home | Release 1 | planned |
@@ -32,14 +32,15 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 Decide the framework, hosting and how the site deploys, then scaffold a runnable project that deploys to a preview link, so every later page builds on real structure.
 **Done when:** the stack and hosting are recorded in a spec, the empty site builds and runs locally, CI runs lint, typecheck, test and build on every PR, and each PR gets a preview deployment.
 - [x] Decide the stack (spec): `/architect stack & architecture`
-- [ ] Scaffold from the decision: `/develop stack & architecture`
+- [x] Scaffold from the decision: `/develop stack & architecture` (PR #9)
 - [ ] Verify it: `/check verify stack & architecture`
 Spec [0001](../specs/0001-stack-architecture/index.md)
 
-### 2. Coding standards & tooling
+### 2. Coding standards & tooling · in-progress
 Capture conventions and tooling choices from the real scaffolded project into root `AGENTS.md`, then install them (TypeScript strict, zod for external input, small accessible components).
 **Done when:** root `AGENTS.md` reflects the real stack and its commands, and lint, format and typecheck run clean in CI.
-- [ ] Capture conventions + tooling choices: `/audit`
+- [x] Capture conventions + tooling choices: `/audit`
+- [ ] Install the tooling: `/develop tooling`
 
 ### 3. Content model · in-progress
 The shape of the Markdown content files: projects and case studies, the bio, experience, skills, links, and the CV file. Every page reads from it, and Toyin edits it to update the site.
