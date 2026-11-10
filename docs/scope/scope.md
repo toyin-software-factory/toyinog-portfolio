@@ -18,7 +18,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | in-progress |
 | 4 | Design system & UI foundation | Foundation | in-progress |
-| 5 | Site shell & Home | Release 1 | planned |
+| 5 | Site shell & Home | Release 1 | in-progress |
 | 6 | Work list & case studies | Release 1 | planned |
 | 7 | About & CV | Release 1 | planned |
 | 8 | Contact form | Release 1 | planned |
@@ -76,10 +76,19 @@ Spec [0003](../specs/0003-design-system.md) · `design.md`
 
 All four pages working end to end on placeholder content, deployed to a preview link. A visitor can learn who Toyin is, see the work, and send a message.
 
-### 5. Site shell & Home · needs a decision
+### 5. Site shell & Home · in-progress
 Shared header, navigation, footer and page layout, plus the Home page: who Toyin is, what Toyin does, featured work, and a clear call to action for both hiring managers and clients.
 **Done when:** every page shares the shell, navigation works by keyboard and on mobile, and Home shows the intro, featured projects from the content files, and links to Work and Contact.
-- [ ] Design it (spec): `/architect site shell & home`
+- [x] Design it (spec): `/architect site shell & home`
+- [ ] Build it: `/develop site shell & home`
+   - [ ] Shell: header, nav, footer, metadata, 404 (AC-1..4, AC-9, AC-10)
+   - [ ] Home sections: hero, selected work, about teaser, CTA (AC-5..8)
+   - [ ] Playwright, phone layout, axe, static check (AC-2, AC-3, AC-10, AC-11)
+- [ ] Verify it: `/check verify site shell & home`
+- [ ] Test it: `/test site shell & home`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document site shell & home`
+Spec [0004](../specs/0004-site-shell-home.md)
 
 ### 6. Work list & case studies · needs a decision
 A list of projects and one case study page per project, generated from the content files.
