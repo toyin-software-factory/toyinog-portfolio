@@ -115,6 +115,9 @@ jobs:
           cp .dev.vars.example .dev.vars
           grep -qx 'CONTACT_TO_EMAIL=' .dev.vars || { echo "::error::CONTACT_TO_EMAIL must stay empty in CI"; exit 1; }
 
+      # Other production style checks go here, before the browser install, for example
+      # `APP_ENV=production pnpm content:check` (spec 0010).
+
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
