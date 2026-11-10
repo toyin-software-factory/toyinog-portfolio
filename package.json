@@ -8,6 +8,7 @@
     "node": ">=26.13.0 <27"
   },
   "scripts": {
+    "prepare": "simple-git-hooks",
     "dev": "next dev",
     "build": "next build",
     "build:worker": "opennextjs-cloudflare build",
@@ -43,12 +44,18 @@
     "eslint-config-next": "16.4.5",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "jsdom": "31.0.0",
+    "lint-staged": "17.6.0",
     "prettier": "3.9.10",
     "prettier-plugin-tailwindcss": "0.8.1",
+    "simple-git-hooks": "2.14.0",
     "tailwindcss": "4.3.5",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
     "vitest": "5.1.0",
     "wrangler": "4.158.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged",
+    "preserveUnused": true
   }
 }
