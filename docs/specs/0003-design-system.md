@@ -1,7 +1,7 @@
 # 0003. Editorial dark design system with Toyin's palette
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

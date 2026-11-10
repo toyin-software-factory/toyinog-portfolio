@@ -1,19 +1,229 @@
 @import "tailwindcss";
 
-/* Placeholder theme. The real design tokens come from the design system spec (scope feature 4). */
+/*
+ * Design tokens. The values come from design.md (spec 0003) and live only here:
+ * components and pages use the utilities these tokens generate (bg-bg, text-accent,
+ * text-h1, max-w-page, rounded-control …), never raw colour values.
+ * Tailwind's default colours, type sizes, radii and shadows are cleared so nothing
+ * off palette can creep in.
+ */
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #171717;
+  --color-*: initial;
+  --color-bg: #202020; /* Carbon Black: page background */
+  --color-surface: #333533; /* Graphite: cards, tags, code, raised areas */
+  --color-rule: #333533; /* Graphite: decorative dividers */
+  --color-text: #d6d6d6; /* Dust Grey: body text, headings */
+  --color-text-muted: #a3a3a3; /* metadata, captions, secondary text */
+  --color-accent: #ffee32; /* Bright Lemon: links, focus ring, badge, primary button */
+  --color-accent-strong: #ffd100; /* Bright Amber: hover and pressed for accent things */
+  --color-on-accent: #202020; /* Carbon Black: text on lemon or amber fills */
+  --color-border-control: #8a8a8a; /* input and outline button borders */
+  --color-danger: #ff8a80; /* form errors */
+
+  /* Fluid type scale: the minimum applies at 390px wide, the maximum at 1440px. */
+  --text-*: initial;
+  --text-display: clamp(3rem, 2.0714rem + 3.8095vw, 5.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.01em;
+  --text-h1: clamp(2.5rem, 2.1286rem + 1.5238vw, 3.5rem);
+  --text-h1--line-height: 1.1;
+  --text-h2: clamp(1.75rem, 1.5643rem + 0.7619vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.4;
+  --text-h3--font-weight: 600;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 500;
+
+  /* Layout widths: page container and the prose reading width. */
+  --container-page: 72rem;
+  --container-prose: 42rem;
+
+  /* Square by default; controls only get a 2px radius. No shadows. */
+  --radius-*: initial;
+  --radius-control: 2px;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  /* Motion: 150ms colour and underline transitions only. */
+  --default-transition-duration: 150ms;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #0a0a0a;
-    --color-foreground: #ededed;
+/* The font families point at the CSS variables next/font sets on <html>. */
+@theme inline {
+  --font-*: initial;
+  --font-display: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-bg);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  /* One focus style for every interactive element: a 2px lemon outline, 2px away. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Programmatic focus targets (the skip link target) don't need a ring. */
+  [tabindex="-1"]:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      /* none, not a tiny duration: a duration would make every property (transition-property
+         defaults to all) animate for a frame, focus outline included. */
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+/*
+ * Prose: styles for Markdown rendered at build time (spec 0002), tokens only.
+ * Used through the Prose component.
+ */
+@layer components {
+  .prose {
+    max-width: var(--container-prose);
+    color: var(--color-text);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  .prose > * + * {
+    margin-top: calc(var(--spacing) * 5);
+  }
+
+  .prose :where(h2) {
+    margin-top: calc(var(--spacing) * 14);
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: 400;
+  }
+
+  .prose :where(h3) {
+    margin-top: calc(var(--spacing) * 10);
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: var(--text-h3--font-weight);
+  }
+
+  .prose :where(h4) {
+    margin-top: calc(var(--spacing) * 8);
+    font-weight: 600;
+  }
+
+  .prose :where(h2, h3, h4) + * {
+    margin-top: calc(var(--spacing) * 3);
+  }
+
+  .prose :where(a) {
+    color: var(--color-accent);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition-property: color, text-decoration-thickness;
+    transition-duration: var(--default-transition-duration);
+  }
+
+  .prose :where(a):hover {
+    color: var(--color-accent-strong);
+    text-decoration-thickness: 2px;
+  }
+
+  .prose :where(strong) {
+    font-weight: 600;
+  }
+
+  .prose :where(ul, ol) {
+    padding-left: calc(var(--spacing) * 6);
+  }
+
+  .prose :where(ul) {
+    list-style-type: disc;
+  }
+
+  .prose :where(ol) {
+    list-style-type: decimal;
+  }
+
+  .prose :where(li) + :where(li) {
+    margin-top: calc(var(--spacing) * 2);
+  }
+
+  .prose :where(li)::marker {
+    color: var(--color-text-muted);
+  }
+
+  .prose :where(blockquote) {
+    border-left: 2px solid var(--color-accent);
+    padding-left: calc(var(--spacing) * 5);
+    font-family: var(--font-display);
+    font-size: var(--text-h3);
+    font-style: italic;
+    line-height: var(--text-h2--line-height);
+  }
+
+  .prose :where(code):not(:where(pre code)) {
+    background-color: var(--color-surface);
+    padding: 0.125em 0.375em;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  /* Code wraps instead of scrolling: a scrolling block would need keyboard focus (axe
+     scrollable-region-focusable), and rendered Markdown can't carry tabindex. */
+  .prose :where(pre) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background-color: var(--color-surface);
+    padding: calc(var(--spacing) * 5);
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+
+  .prose :where(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .prose :where(hr) {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+  }
 }
