@@ -33,3 +33,4 @@ Missing: none. Not applied: none.
 ## Owed outside the code
 
 - Toyin creates the Web Analytics site for `toyinog.com` and sets `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` as a Workers Builds build variable at go live. Until then production renders no beacon (AC-2's "token missing" case).
+- When creating the site, pick **"Enable with JS Snippet installation"**, not the automatic setup. Automatic setup injects Cloudflare's own beacon into proxied pages, even without our token, which would double count alongside the layout's beacon (spec 0009 chose Option 1 over Option 2 for this reason). After go live, check a live page has exactly one `beacon.min.js`.
