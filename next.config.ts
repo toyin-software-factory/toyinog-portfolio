@@ -35,6 +35,8 @@ const nextConfig: NextConfig = {
   // OpenNext on Workers has no built in image optimizer; images are pre sized.
   images: { unoptimized: true },
   poweredByHeader: false,
+  // Stop `next dev` writing its own AGENTS.md. Root AGENTS.md is owned by /audit.
+  agentRules: false,
   headers() {
     return Promise.resolve([{ source: "/:path*", headers: securityHeaders }]);
   },
