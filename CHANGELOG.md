@@ -19,3 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Draft projects (`draft: true`) show in previews and local dev but never in production (see spec 0002).
 - Case study Markdown renders to safe HTML at build time: heading ids, `rel="noopener noreferrer"` on external links, and no raw HTML (see spec 0002).
 - Placeholder content for every type: 4 projects (3 featured, 1 draft), the profile, the About page and a placeholder CV (see spec 0002).
+- Contact page at `/contact`: a form (name, email, "a role or a project", message) that emails Toyin, with Toyin's email, LinkedIn and GitHub beside it (see spec 0007).
+- Server side validation with an error summary that links to each field and keeps what the visitor typed (see spec 0007).
+- Spam protection: Cloudflare Turnstile, a hidden honeypot field, and a rate limit of 5 messages a minute per visitor (see spec 0007).
+- A thank you page at `/contact/sent`, shown only after a send and kept out of search results (see spec 0007).
+- Outside production the form does a dry run: everything except the email, so previews never send mail (see spec 0007).
+- `/contact` in the sitemap.

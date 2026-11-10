@@ -122,17 +122,17 @@ Spec [0006](../specs/0006-about-cv.md)
 A form (name, email, hiring or project, message) that emails Toyin, with spam protection. Links to email and profiles sit beside it.
 **Done when:** a valid submission reaches Toyin's inbox with the hiring or project choice, input is validated on the server, spam and repeat submissions are blocked, and the visitor sees clear success and error states. No keys reach the browser.
 - [x] Design it (spec): `/architect contact form`
-- [ ] Build it: `/develop contact form`
-   - [ ] Schema and static form page (AC-1, AC-2, AC-11)
-   - [ ] Server action: honeypot, validation, error summary (AC-3, AC-4)
-   - [ ] Turnstile and rate limit (AC-5, AC-6)
-   - [ ] Email send, dry run, failure handling, logging (AC-7..9, AC-12)
-   - [ ] Sent page and Playwright with axe (AC-10, AC-13)
-- [ ] Verify it: `/check verify contact form`
-- [ ] Test it: `/test contact form`
+- [x] Build it: `/develop contact form`
+   - [x] Schema and static form page (AC-1, AC-2, AC-11)
+   - [x] Server action: honeypot, validation, error summary (AC-3, AC-4)
+   - [x] Turnstile and rate limit (AC-5, AC-6)
+   - [x] Email send, dry run, failure handling, logging (AC-7..9, AC-12)
+   - [x] Sent page and Playwright with axe (AC-10, AC-13)
+- [x] Verify it: `/check verify contact form`
+- [x] Test it: `/test contact form`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document contact form`
-Spec [0007](../specs/0007-contact-form.md)
+- [x] Document it: `/document contact form`
+Spec [0007](../specs/0007-contact-form.md) · code in `src/app/contact/`, `src/lib/contact/`
 
 ## Release 2: launch ready
 

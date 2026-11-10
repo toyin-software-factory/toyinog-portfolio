@@ -1,7 +1,7 @@
 # 0007. Contact form with Email Routing, Turnstile and rate limiting
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -57,16 +57,16 @@ Lead calls (each with the runner up): message minimum 20 characters to cut "hi" 
 
 ## Feature design
 
-**Files**: `src/app/contact/page.tsx` (static), `src/app/contact/ContactForm.tsx` (client), `src/app/contact/actions.ts` (server action), `src/app/contact/sent/page.tsx` (dynamic, reads the cookie), `src/lib/contact/{schema,turnstile,email,rateLimit}.ts`, and tests. Turnstile loads through `next/script` from `challenges.cloudflare.com` (already allowed in the CSP).
+**Files**: `src/app/contact/page.tsx` (static), `src/app/contact/ContactForm.tsx` (client), `src/app/contact/actions.ts` (server action), `src/app/contact/sent/page.tsx` (static), `src/middleware.ts` (edge middleware, matcher `/contact/sent`: the cookie gate), `src/lib/contact/{schema,turnstile,email,rateLimit}.ts`, and tests. Turnstile loads through `next/script` from `challenges.cloudflare.com` (already allowed in the CSP).
 
 **Action flow**:
 1. Parse `FormData` into an object. If `website` is non empty, redirect to `/contact/sent` (AC-4).
 2. `contactSchema.safeParse` fails: return `{ status: 'invalid', errors, values }` (AC-3).
-3. Verify Turnstile. On failure return `{ status: 'turnstile', values }` (AC-5).
+3. Verify Turnstile (siteverify with a 5 second timeout). On failure return `{ status: 'turnstile', values }` (AC-5). A missing `TURNSTILE_SECRET_KEY` is a server misconfiguration, not the visitor's fault: log `contact.config_missing` and return `{ status: 'send_failed', values }` (AC-9).
 4. Rate limit on `CF-Connecting-IP`. If over the limit return `{ status: 'rate_limited', values }` (AC-6).
 5. Not production: log the dry run, set the cookie, redirect (AC-8, AC-10).
 6. Build the MIME message with `mimetext` and call `env.SEND_EMAIL.send(new EmailMessage(from, to, raw))`. On error return `{ status: 'send_failed', values }` and log (AC-9).
-7. Set the cookie and redirect to `/contact/sent` (AC-10).
+7. Set the cookie and redirect to `/contact/sent` (AC-10). The page itself is static; `src/middleware.ts` gates it. A request without the `contact_sent` cookie gets a 307 to `/contact`. A request with it passes through, marked `private, no-store`, and that response deletes the cookie. Next renders the redirect target inside the action's own response, so the middleware sees the next request to `/contact/sent`, not the first view: a reload within the 60 seconds shows the page once more and clears the cookie. Edge middleware (`middleware.ts`), not Next 16's `proxy.ts`, because `@opennextjs/cloudflare` runs proxy on the Node runtime, which it marks experimental on workerd.
 
 **Value sourcing**:
 | Action | Value | Source |
