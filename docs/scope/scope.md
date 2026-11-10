@@ -108,15 +108,15 @@ Spec [0005](../specs/0005-work-case-studies.md) · code in `src/app/work/`, `src
 Bio, experience, skills and a CV download, for hiring managers who want the full picture.
 **Done when:** the About page renders bio, experience and skills from the content files, and the CV downloads as a PDF from a stable link.
 - [x] Design it (spec): `/architect about & cv`
-- [ ] Build it: `/develop about & cv`
-   - [ ] Intro, bio and CV download (AC-1, AC-2, AC-5, AC-6)
-   - [ ] Experience timeline and skills (AC-3, AC-4)
-   - [ ] Sitemap, axe, static check (AC-6, AC-7)
-- [ ] Verify it: `/check verify about & cv`
-- [ ] Test it: `/test about & cv`
+- [x] Build it: `/develop about & cv`
+   - [x] Intro, bio and CV download (AC-1, AC-2, AC-5, AC-6)
+   - [x] Experience timeline and skills (AC-3, AC-4)
+   - [x] Sitemap, axe, static check (AC-6, AC-7)
+- [x] Verify it: `/check verify about & cv`
+- [x] Test it: `/test about & cv`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document about & cv`
-Spec [0006](../specs/0006-about-cv.md)
+- [x] Document it: `/document about & cv`
+Spec [0006](../specs/0006-about-cv.md) · code in `src/app/about/`, `src/lib/format/` · verify report [docs/reviews/2026-11-10-verify-about-cv.md](../reviews/2026-11-10-verify-about-cv.md)
 
 ### 8. Contact form · done
 A form (name, email, hiring or project, message) that emails Toyin, with spam protection. Links to email and profiles sit beside it.

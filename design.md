@@ -29,6 +29,12 @@ Work list and case study references (spec 0005):
 - Nite Riot, large project title beside a credits list: https://mobbin.com/sites/sections/d8c6801c-2eaa-48ed-b55b-5c74d0042347
 - Whereby, serif case study headline with a short intro: https://mobbin.com/sites/sections/8f8404c1-8369-4a31-8adc-eac383f475d9
 
+About page references (spec 0006):
+- The ReadME Project (GitHub), a large bio with a narrow column beside it: https://mobbin.com/sites/sections/10928b8e-852d-4424-b248-8028e8ff92d5
+- Büro, dated chapters as rows on thin rules, the model for the experience timeline: https://mobbin.com/sites/sections/bcad6cf8-5eb5-4590-bb1f-b8f4d4ecfb88
+- Grok, a dark timeline with small dated labels: https://mobbin.com/sites/sections/5809b85f-2e44-4d26-998f-9fb4e2379f13
+- Harvest (above) for the bio block
+
 Contact page references (spec 0007):
 - Savor, serif intro with the form beside the contact details: https://mobbin.com/sites/sections/ae1f5fe6-9420-45e4-b097-64ae2aa8c06e
 - In Common With, ruled contact details list beside the form: https://mobbin.com/sites/sections/dd7619d6-0abf-4c9a-843e-e4cb41a86415

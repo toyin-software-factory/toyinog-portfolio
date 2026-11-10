@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/site";
 export const dynamic = "force-static";
 
 /** Public routes. Later features add theirs here. */
-const STATIC_ROUTES = ["/", "/work", "/contact"];
+const STATIC_ROUTES = ["/", "/work", "/about", "/contact"];
 
 /**
  * Every public page as an absolute URL. Case studies come from the content

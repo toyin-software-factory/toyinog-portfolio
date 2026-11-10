@@ -14,7 +14,7 @@ import { getAppEnv } from "../../src/lib/env";
  * (`getAppEnv()`), so a new project is covered without touching this file.
  * Later page tasks: add your fixed routes to FIXED_ROUTES.
  */
-const FIXED_ROUTES = ["/", "/work", "/contact"];
+const FIXED_ROUTES = ["/", "/work", "/about", "/contact"];
 
 const { projects } = loadContent({
   rootDir: process.cwd(),
