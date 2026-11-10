@@ -2,6 +2,7 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 
 import { resolveAppEnv } from "./src/lib/env";
+import { isIndexable, NOINDEX_HEADER } from "./src/lib/seo/indexing";
 
 // Production or preview, fixed per build (spec 0001): APP_ENV if set, else
 // production when Workers Builds builds main, else preview. Code reads it with getAppEnv().
@@ -45,7 +46,10 @@ const nextConfig: NextConfig = {
   // Stop `next dev` writing its own AGENTS.md. Root AGENTS.md is owned by /audit.
   agentRules: false,
   headers() {
-    return Promise.resolve([{ source: "/:path*", headers: securityHeaders }]);
+    // Builds that mustn't be indexed (previews) also send X-Robots-Tag: noindex
+    // on every routed response (spec 0008 AC-5). Decided once, at build time.
+    const headers = isIndexable(appEnv) ? securityHeaders : [...securityHeaders, NOINDEX_HEADER];
+    return Promise.resolve([{ source: "/:path*", headers }]);
   },
 };
 

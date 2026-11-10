@@ -77,11 +77,7 @@ test.describe("home page", () => {
 });
 
 test.describe("crawler files", () => {
-  test("robots.txt points at the sitemap", async ({ request }) => {
-    const response = await request.get("/robots.txt");
-    expect(response.ok()).toBe(true);
-    expect(await response.text()).toContain("Sitemap: https://toyinog.com/sitemap.xml");
-  });
+  // robots.txt depends on the environment now (spec 0008 AC-5): see tests/e2e/seo.spec.ts.
 
   test("sitemap.xml lists the home page", async ({ request }) => {
     const response = await request.get("/sitemap.xml");

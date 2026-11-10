@@ -2,17 +2,18 @@ import type { Metadata } from "next";
 
 import { Container, Heading } from "@/components/ui";
 import { getProjects } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo/metadata";
 
 import { ProjectCard } from "./_components/ProjectCard";
 import { WORK_DESCRIPTION, WORK_INTRO } from "./copy";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Work",
   description: WORK_DESCRIPTION,
-  alternates: { canonical: "/work" },
-};
+  path: "/work",
+});
 
 /** Every published project as a card grid, in `getProjects()` order (spec 0005). */
 export default function WorkPage() {

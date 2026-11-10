@@ -4,6 +4,7 @@ import { Container, Heading, TextLink } from "@/components/ui";
 import { TURNSTILE_TEST_SITE_KEY } from "@/lib/contact/turnstile";
 import { getProfile } from "@/lib/content";
 import { getAppEnv } from "@/lib/env";
+import { pageMetadata } from "@/lib/seo/metadata";
 
 import { ContactForm } from "./ContactForm";
 import { contactIntro } from "./intro";
@@ -11,11 +12,11 @@ import { contactIntro } from "./intro";
 // Prerendered. Only the form's server action runs on the Worker.
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: "Send Toyin Ogunseinde a message about a role or a project.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 /** Outside production the published test key, so previews work on any host (spec 0001). */
 const turnstileSiteKey = (): string =>

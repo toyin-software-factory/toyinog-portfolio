@@ -88,7 +88,11 @@ describe("case study route (spec 0005)", () => {
     const meta = await generateMetadata({ params: Promise.resolve({ slug: first.slug }) });
     expect(meta.title).toBe(first.title);
     expect(meta.description).toBe(first.summary);
-    expect(meta.openGraph?.images).toEqual([{ url: first.cover.src, alt: first.cover.alt }]);
+    // The cover at its real size, with width and height (spec 0008 AC-3).
+    expect(meta.openGraph?.images).toMatchObject([{ url: first.cover.src, alt: first.cover.alt }]);
+    const [image] = [meta.openGraph?.images].flat() as { width?: number; height?: number }[];
+    expect(image?.width).toBeGreaterThan(0);
+    expect(image?.height).toBeGreaterThan(0);
   });
 
   it("calls notFound for an unknown slug (AC-3)", async () => {
