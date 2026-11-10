@@ -54,7 +54,10 @@ Read its "Heads up" list and clear every item before the task is done: context g
 - Run the project's lint, typecheck, test and build commands before every push.
 - Wait for CI and CodeRabbit on your latest push, then fix their comments or reply why not. CodeRabbit puts out of diff comments in the review body, so read that too.
 - Retry limit: three attempts at a failing check or a CodeRabbit loop. Then stop and raise it with `ask_user` (lead) or to the lead (builders), with what you tried.
-- The lead merges with `gh pr merge <n> --squash --delete-branch` only when CI is green and CodeRabbit has no open comments, one PR at a time.
+- The lead merges with `gh pr merge <n> --squash --delete-branch`, one PR at a time, and decides per PR whether it needs CodeRabbit's review:
+  - **Needs review (the default):** any change to code, config, dependencies, CI, tests or build. Merge only when CI is green and CodeRabbit has finished on the latest push with no open comments.
+  - **Can skip review:** a PR that changes only prose: `docs/scope/`, `docs/specs/`, `design.md`, `AGENTS.md`, `README.md`, or typo fixes. Merge once CI (if any) is green, without waiting for CodeRabbit. Say "merged without review: docs only" in the merge.
+  - When unsure, it needs review.
 
 ## Security
 
