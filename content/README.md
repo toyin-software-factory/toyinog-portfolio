@@ -27,7 +27,7 @@ Everything here now is **placeholder text**, marked with "Placeholder". Replace 
 ## Add a project
 
 1. Pick a slug: lowercase letters, digits and single hyphens, like `checkout-redesign`.
-2. Add a cover image at `public/images/work/<slug>.webp` (or `.jpg`, `.png`, `.avif`, `.svg`).
+2. Add a cover image at `public/images/work/<slug>.webp` (or `.jpg`, `.png`, `.avif`, `.svg`). Crop it to 16:10, for example 1600 by 1000 pixels: the case study shows it at that shape, so other shapes get trimmed at the edges.
 3. Copy this into `content/work/<slug>.md` and fill it in:
 
 ```markdown
@@ -61,6 +61,8 @@ Your part of the work.
 
 What changed, with a number if you have one.
 ```
+
+That's all: on the next build the project shows on `/work`, gets its own page at `/work/<slug>`, and joins the sitemap. No code change is needed.
 
 The three sections (`## Problem`, `## What I did`, `## Outcome`) are recommended. Leaving one out prints a warning, not an error.
 

@@ -1,7 +1,7 @@
 # 0005. Work list and case study pages
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

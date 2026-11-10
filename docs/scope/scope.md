@@ -16,9 +16,9 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | done |
-| 3 | Content model | Foundation | in-progress |
+| 3 | Content model | Foundation | done |
 | 4 | Design system & UI foundation | Foundation | in-progress |
-| 5 | Site shell & Home | Release 1 | in-progress |
+| 5 | Site shell & Home | Release 1 | done |
 | 6 | Work list & case studies | Release 1 | in-progress |
 | 7 | About & CV | Release 1 | in-progress |
 | 8 | Contact form | Release 1 | in-progress |
@@ -42,7 +42,7 @@ Capture conventions and tooling choices from the real scaffolded project into ro
 - [x] Capture conventions + tooling choices: `/audit`
 - [x] Install the tooling: `/develop tooling`
 
-### 3. Content model · in-progress
+### 3. Content model · done
 The shape of the Markdown content files: projects and case studies, the bio, experience, skills, links, and the CV file. Every page reads from it, and Toyin edits it to update the site.
 **Done when:** each content type has a validated schema, a malformed file fails the build with a clear message, and placeholder files exist for every type.
 - [x] Design it (spec): `/architect content model`
@@ -51,7 +51,7 @@ The shape of the Markdown content files: projects and case studies, the bio, exp
    - [x] Markdown rendering pipeline (AC-7)
    - [x] Placeholder content, assets and content README (AC-8)
    - [x] Fixture tests and `content:check` in CI (AC-3..7)
-- [x] Verify it: `/check verify content model` (AC-4 route and sitemap part pending RR1-T02)
+- [x] Verify it: `/check verify content model`
 - [x] Test it: `/test content model`
 - [x] Review it: CodeRabbit on the PR (#16)
 - [x] Document it: `/document content model`
@@ -76,7 +76,7 @@ Spec [0003](../specs/0003-design-system.md) · `design.md` · code in `src/compo
 
 All four pages working end to end on placeholder content, deployed to a preview link. A visitor can learn who Toyin is, see the work, and send a message.
 
-### 5. Site shell & Home · in-progress
+### 5. Site shell & Home · done
 Shared header, navigation, footer and page layout, plus the Home page: who Toyin is, what Toyin does, featured work, and a clear call to action for both hiring managers and clients.
 **Done when:** every page shares the shell, navigation works by keyboard and on mobile, and Home shows the intro, featured projects from the content files, and links to Work and Contact.
 - [x] Design it (spec): `/architect site shell & home`
@@ -86,7 +86,7 @@ Shared header, navigation, footer and page layout, plus the Home page: who Toyin
    - [x] Playwright, phone layout, axe, static check (AC-2, AC-3, AC-10, AC-11)
 - [x] Verify it: `/check verify site shell & home`
 - [x] Test it: `/test site shell & home`
-- [ ] Review it: CodeRabbit on the PR
+- [x] Review it: CodeRabbit on the PR (#25)
 - [x] Document it: `/document site shell & home`
 Spec [0004](../specs/0004-site-shell-home.md) · code in `src/components/site/`, `src/app/_home/`, `src/app/layout.tsx` · verify report [docs/reviews/2026-11-10-verify-site-shell-home.md](../reviews/2026-11-10-verify-site-shell-home.md)
 
@@ -94,15 +94,15 @@ Spec [0004](../specs/0004-site-shell-home.md) · code in `src/components/site/`,
 A list of projects and one case study page per project, generated from the content files.
 **Done when:** the Work page lists every project from the content files, each project has its own page at a stable URL, adding a Markdown file adds a project with no code change, and a missing project URL shows a helpful not found page.
 - [x] Design it (spec): `/architect work list & case studies`
-- [ ] Build it: `/develop work list & case studies`
-   - [ ] Work grid page (AC-1, AC-2, AC-8)
-   - [ ] Static case study pages (AC-3..8)
-   - [ ] Sitemap, fixtures, axe, static check (AC-9..11)
-- [ ] Verify it: `/check verify work list & case studies`
-- [ ] Test it: `/test work list & case studies`
+- [x] Build it: `/develop work list & case studies`
+   - [x] Work grid page (AC-1, AC-2, AC-8)
+   - [x] Static case study pages (AC-3..8)
+   - [x] Sitemap, fixtures, axe, static check (AC-9..11)
+- [x] Verify it: `/check verify work list & case studies`
+- [x] Test it: `/test work list & case studies`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document work list & case studies`
-Spec [0005](../specs/0005-work-case-studies.md)
+- [x] Document it: `/document work list & case studies`
+Spec [0005](../specs/0005-work-case-studies.md) · code in `src/app/work/`, `src/app/sitemap.ts` · verify report [docs/reviews/2026-11-10-verify-work-case-studies.md](../reviews/2026-11-10-verify-work-case-studies.md)
 
 ### 7. About & CV · in-progress
 Bio, experience, skills and a CV download, for hiring managers who want the full picture.

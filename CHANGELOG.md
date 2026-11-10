@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Work page at `/work`: every published project as a card grid in Toyin's chosen order (see spec 0005).
+- A case study page for each project at `/work/<slug>`, with the title, summary, role, client, year, tags, project links, the cover, the case study text and a "Next project" link. Each page has its own title, description and share image (see spec 0005).
+- `/work` and every case study are in the sitemap. Adding a Markdown file to `content/work/` adds the card, the page and the sitemap entry on the next build, with no code change (see spec 0005).
 - Site shell on every page: a header with Toyin's name and the Work, About and Contact links (always visible, also on phones), a skip link, and a footer with LinkedIn, GitHub, email, copyright and a Back to top link. The current section is marked in the nav (see spec 0004).
 - Home page: a hero with name, headline, intro, availability badge and two actions, then Selected work (the featured projects as cards), an About teaser, and a contact call to action. All text comes from the content files (see spec 0004).
 - A styled "Page not found" page that returns HTTP 404 and links back to Home and Work (see spec 0004).
