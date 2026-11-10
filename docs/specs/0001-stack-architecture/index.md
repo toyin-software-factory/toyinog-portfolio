@@ -117,8 +117,9 @@ GitHub Actions workflow `ci.yml`, on every PR and on pushes to `main`, Node from
 3. `pnpm test` (Vitest)
 4. `pnpm build:worker` (the OpenNext build, so adapter failures are caught, not only `next build`), followed by a bundle size gate: `wrangler deploy --dry-run --outdir` and fail if the compressed Worker goes over 3 MiB (the Workers Free plan limit)
 5. `pnpm exec playwright install --with-deps chromium`, then `pnpm test:e2e` against `pnpm preview` (the real Workers runtime) with the Turnstile test keys and `APP_ENV=preview`. Playwright has a desktop project and a mobile project (a phone viewport), and runs axe on every page. The HTML report is uploaded as an artifact.
+6. A second job, `e2e (production style)`, runs in parallel: install, `.dev.vars` from the example (with `CONTACT_TO_EMAIL` checked empty, so the contact action can never send), Chromium, then `pnpm test:e2e:production`. `playwright.config.ts` builds that run with `APP_ENV=production`, a dummy `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` and the Turnstile test site key, serves it on its own port, and runs only the environment aware specs listed in `tests/e2e/env.ts` (whole files such as `analytics.spec.ts` and `seo.spec.ts`, plus single tests tagged `@prod-env`). Each of those specs checks the right behaviour for whichever build it runs on, so both jobs run them.
 
-Required checks on `main` (branch protection, a Toyin action): `ci` and the Workers Builds check.
+Required checks on `main` (branch protection, a Toyin action): `ci`, `e2e (production style)` and the Workers Builds check.
 
 ## Domain, SEO and security basics
 
