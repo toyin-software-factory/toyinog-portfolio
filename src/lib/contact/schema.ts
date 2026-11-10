@@ -1,19 +1,16 @@
 import { z } from "zod";
 
-/** The form's fields, in display order. */
-export const CONTACT_FIELDS = ["name", "email", "type", "message"] as const;
-export type ContactField = (typeof CONTACT_FIELDS)[number];
+import { CONTACT_FIELDS, type ContactField, CONTACT_TYPES, HONEYPOT_FIELD } from "./fields";
 
-export const CONTACT_TYPES = ["hiring", "project"] as const;
-export type ContactType = (typeof CONTACT_TYPES)[number];
-
-export const CONTACT_TYPE_LABELS: Readonly<Record<ContactType, string>> = {
-  hiring: "A role (hiring)",
-  project: "A project",
-};
-
-/** The honeypot field. Real visitors never see or fill it. */
-export const HONEYPOT_FIELD = "website";
+// Server code keeps importing these from here.
+export {
+  CONTACT_FIELDS,
+  type ContactField,
+  CONTACT_TYPE_LABELS,
+  CONTACT_TYPES,
+  type ContactType,
+  HONEYPOT_FIELD,
+} from "./fields";
 
 const LINE_BREAK = /[\r\n]/;
 

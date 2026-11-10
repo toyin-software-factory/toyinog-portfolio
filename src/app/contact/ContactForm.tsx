@@ -12,7 +12,7 @@ import {
   CONTACT_TYPES,
   type ContactField,
   HONEYPOT_FIELD,
-} from "@/lib/contact/schema";
+} from "@/lib/contact/fields";
 
 import { sendContact } from "./actions";
 import { formMessage } from "./messages";

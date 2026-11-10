@@ -37,4 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `/contact` no longer logs a Content Security Policy violation in the browser. The form's field list no longer pulls the validation library into the page, which also makes `/contact` load about 29 KiB (gzip) less JavaScript (see spec 0009, AC-4).
 - Pages rendered on request (not prebuilt) now show the header and footer instead of failing with a server error on Cloudflare Workers. The shell's name, headline, intro and links now come from a small module written at build time (`pnpm content:generate`), so it never reads `content/` while serving a request (see spec 0004, AC-12).
