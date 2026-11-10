@@ -42,3 +42,15 @@ With `/work` and `/work/<slug>` built, the e2e checks `Work is marked current on
 
 Result: met. AC-2 is fully verified.
 
+## AC-12 (added after build, RR1-T05, 2026-11-10)
+
+AC-12: the shell's profile values come from a module generated at build time, so a route rendered at request time on Workers gets the shell with no file access.
+
+- `pnpm content:generate` writes `src/lib/content/generated/shell-profile.ts` (the shell's profile fields and the build year). `build`, `dev`, `lint`, `typecheck` and `test` run it first, and OpenNext's build calls `pnpm build`, so Workers Builds runs it too.
+- `src/app/layout.tsx`, `Header`, `NavLinks` and `Footer` import only that module and the pure `shell-profile` types. `src/components/site/noLoader.test.ts` fails if any of them imports the loader or `node:` modules.
+- `/dynamic-check` is a `force-dynamic` page that returns 404 in production. On `pnpm preview` (desktop and mobile), `tests/e2e/dynamic.spec.ts` gets 200, no `x-nextjs-prerender` header, a fresh timestamp per request, the header (name and Main nav) and the footer (`© <year> <name>`, Email). Full run: 82 passed.
+- Regression check: with main's `layout.tsx` (which calls `getProfile()`) put back temporarily, the same spec gets **500**. It passes with the fix.
+- `content:generate` on broken content exits 1 with the same message as `content:check` and writes nothing (`src/lib/content/generate.test.ts`).
+
+Result: met.
+

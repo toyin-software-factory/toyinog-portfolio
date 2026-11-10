@@ -114,6 +114,6 @@ Skateboard: shell first (every later page needs it), then Home top to bottom.
 
 ## Follow-up
 
-- [ ] AC-12 (task RR1-T05). Found in RR1-T04: the root layout called `getProfile()`, which reads `content/` with `node:fs`. That works on prerendered pages but returns 500 on any dynamic route on Workers (it broke `/contact/sent`), against spec 0002 AC-10. RR1-T04 works around it with a middleware cookie gate, so this fix protects future dynamic routes and server action responses.
+- [x] AC-12 (task RR1-T05). Found in RR1-T04: the root layout called `getProfile()`, which reads `content/` with `node:fs`. That works on prerendered pages but returns 500 on any dynamic route on Workers (it broke `/contact/sent`), against spec 0002 AC-10. RR1-T04 works around it with a middleware cookie gate, so this fix protects future dynamic routes and server action responses.
 
 - [ ] Full SEO (share cards, structured data, sitemap entries) is scope feature 9.

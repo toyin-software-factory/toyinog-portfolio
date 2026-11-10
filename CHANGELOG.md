@@ -25,3 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A thank you page at `/contact/sent`, shown only after a send and kept out of search results (see spec 0007).
 - Outside production the form does a dry run: everything except the email, so previews never send mail (see spec 0007).
 - `/contact` in the sitemap.
+
+### Fixed
+
+- Pages rendered on request (not prebuilt) now show the header and footer instead of failing with a server error on Cloudflare Workers. The shell's name, headline, intro and links now come from a small module written at build time (`pnpm content:generate`), so it never reads `content/` while serving a request (see spec 0004, AC-12).
