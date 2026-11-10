@@ -3,7 +3,8 @@ import { expect, test } from "@playwright/test";
 
 import { loadContent } from "../../src/lib/content/load";
 import { decodeEntities } from "../../src/lib/content/text";
-import { getAppEnv } from "../../src/lib/env";
+
+import { E2E_APP_ENV } from "./env";
 
 /** Project text comes from content files, so escape it before building a RegExp. */
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -13,7 +14,7 @@ const WCAG_AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 // The same projects, in the same order, as the build under test.
 const { projects } = loadContent({
   rootDir: process.cwd(),
-  appEnv: getAppEnv(),
+  appEnv: E2E_APP_ENV,
   currentYear: new Date().getFullYear(),
 });
 

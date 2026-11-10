@@ -10,6 +10,14 @@
  */
 export const E2E_PRODUCTION = process.env.E2E_ENV === "production";
 
+/**
+ * The APP_ENV the server under test was built with. playwright.config.ts sets it on
+ * the webServer only (production for the production style run, preview otherwise),
+ * so the test workers never see it in process.env. Specs read this instead of
+ * calling getAppEnv(), which would fall back to "preview" in the workers.
+ */
+export const E2E_APP_ENV: "production" | "preview" = E2E_PRODUCTION ? "production" : "preview";
+
 /** Not a real token: the beacon accepts any value and it only reaches Cloudflare's endpoint. */
 export const DUMMY_ANALYTICS_TOKEN = "0123456789abcdef0123456789abcdef";
 

@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 import { loadContent } from "../../src/lib/content/load";
-import { getAppEnv } from "../../src/lib/env";
+
+import { E2E_APP_ENV } from "./env";
 
 /**
  * Every content route must be prerendered HTML (spec 0001, spec 0002 AC-10).
@@ -11,14 +12,14 @@ import { getAppEnv } from "../../src/lib/env";
  * prerendered page with `x-nextjs-prerender: 1`.
  *
  * Case studies come from the content, resolved the same way as the build
- * (`getAppEnv()`), so a new project is covered without touching this file.
+ * (`E2E_APP_ENV`), so a new project is covered without touching this file.
  * Later page tasks: add your fixed routes to FIXED_ROUTES.
  */
 const FIXED_ROUTES = ["/", "/work", "/about", "/contact"];
 
 const { projects } = loadContent({
   rootDir: process.cwd(),
-  appEnv: getAppEnv(),
+  appEnv: E2E_APP_ENV,
   currentYear: new Date().getFullYear(),
 });
 
