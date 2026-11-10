@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { SkipLink } from "@/components/ui";
-import { getProfile } from "@/lib/content";
+import { BUILD_YEAR, SHELL_PROFILE } from "@/lib/content/generated/shell-profile";
 import { SITE_URL } from "@/lib/site";
 
 import "./globals.css";
@@ -25,28 +25,30 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-/** Root metadata from the profile (spec 0004, AC-10). Pages set only their own part of the title. */
-export function generateMetadata(): Metadata {
-  const { name, headline, intro } = getProfile();
-  return {
-    metadataBase: new URL(SITE_URL),
-    title: { template: `%s · ${name}`, default: `${name} · ${headline}` },
-    description: intro,
-  };
-}
+const { name, headline, intro } = SHELL_PROFILE;
+
+/**
+ * Root metadata from the profile (spec 0004, AC-10). Pages set only their own part of the title.
+ * Values come from the build time module, never the file loader, so this also works on
+ * routes rendered at request time on Workers (AC-12).
+ */
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: { template: `%s · ${name}`, default: `${name} · ${headline}` },
+  description: intro,
+};
 
 /** The site shell (spec 0004): skip link, header, main and footer around every page. */
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  const profile = getProfile();
   return (
     <html lang="en" className={`${instrumentSerif.variable} ${inter.variable}`}>
       <body className="min-h-dvh bg-bg font-sans text-body text-text antialiased">
         <SkipLink />
-        <Header name={profile.name} />
+        <Header name={SHELL_PROFILE.name} />
         <main id="main" tabIndex={-1}>
           {children}
         </main>
-        <Footer profile={profile} year={new Date().getFullYear()} />
+        <Footer profile={SHELL_PROFILE} year={BUILD_YEAR} />
       </body>
     </html>
   );

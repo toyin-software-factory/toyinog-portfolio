@@ -9,20 +9,21 @@
   },
   "scripts": {
     "prepare": "simple-git-hooks",
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "pnpm content:generate && next dev",
+    "build": "pnpm content:generate && next build",
     "build:worker": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare upload",
-    "lint": "eslint .",
+    "lint": "pnpm content:generate && eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run",
+    "typecheck": "pnpm content:generate && next typegen && tsc --noEmit",
+    "test": "pnpm content:generate && vitest run",
     "test:e2e": "playwright test",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "content:check": "tsx src/lib/content/check.ts"
+    "content:check": "tsx src/lib/content/check.ts",
+    "content:generate": "tsx src/lib/content/generate.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "1.20.16",

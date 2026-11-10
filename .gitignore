@@ -18,6 +18,9 @@
 next-env.d.ts
 *.tsbuildinfo
 
+# Written by `pnpm content:generate` before dev, build, lint, typecheck and test (spec 0004 AC-12)
+/src/lib/content/generated/
+
 # OpenNext and Cloudflare
 /.open-next/
 /.wrangler/
