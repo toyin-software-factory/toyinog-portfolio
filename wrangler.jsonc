@@ -23,10 +23,8 @@
     },
   ],
   // Plain vars only. Secrets (CONTACT_TO_EMAIL, TURNSTILE_SECRET_KEY) are set in
-  // Cloudflare and, locally, in .dev.vars. APP_ENV is overridden to "preview"
-  // for non production builds.
+  // Cloudflare and, locally, in .dev.vars.
   "vars": {
-    "APP_ENV": "production",
     "CONTACT_FROM_EMAIL": "contact@toyinog.com",
   },
 }

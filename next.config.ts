@@ -1,6 +1,12 @@
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 
+import { resolveAppEnv } from "./src/lib/env";
+
+// Production or preview, fixed per build (spec 0001): APP_ENV if set, else
+// production when Workers Builds builds main, else preview. Code reads it with getAppEnv().
+const appEnv = resolveAppEnv(process.env);
+
 const isDev = process.env.NODE_ENV === "development";
 
 // Static pages can't carry per request nonces, so inline scripts and styles
@@ -32,6 +38,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  env: { APP_ENV: appEnv },
   // OpenNext on Workers has no built in image optimizer; images are pre sized.
   images: { unoptimized: true },
   poweredByHeader: false,
