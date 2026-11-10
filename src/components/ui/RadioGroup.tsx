@@ -15,7 +15,10 @@ type RadioGroupProps = {
   readonly className?: string;
 };
 
-/** Native radios in a fieldset with a legend. Arrow keys move between options. */
+/**
+ * Native radios in a fieldset with a legend. Arrow keys move between options.
+ * Each radio gets the id `${name}-${value}`, so an error summary can link to it.
+ */
 export function RadioGroup({
   name,
   legend,
@@ -44,6 +47,7 @@ export function RadioGroup({
         >
           <input
             type="radio"
+            id={`${name}-${option.value}`}
             name={name}
             value={option.value}
             defaultChecked={value === option.value}

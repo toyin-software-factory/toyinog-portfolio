@@ -16,6 +16,10 @@ describe("RadioGroup", () => {
     expect(screen.getByRole("group", { name: "What brings you here?" })).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "I'm hiring" })).not.toBeChecked();
     expect(screen.getByRole("radio", { name: "I have a project" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "I'm hiring" })).toHaveAttribute(
+      "id",
+      "reason-hiring",
+    );
   });
 
   it("links the error to the group", () => {
