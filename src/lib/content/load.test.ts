@@ -2,7 +2,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:f
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ContentError } from "./errors";
 import { type ContentSnapshot, type LoadOptions, loadContent } from "./load";
@@ -56,7 +56,7 @@ describe("loadContent: valid content", () => {
       year: 2021,
       tags: ["Testing"],
       cover: { src: "/images/work/alpha.svg", alt: "Cover for Alpha" },
-      links: [{ label: "Live site", url: "https://example.com/alpha" }],
+      links: [{ label: "Live site", url: "https://fixture.test/alpha" }],
       featured: true,
       draft: false,
       order: 2,
@@ -79,8 +79,8 @@ describe("loadContent: valid content", () => {
       headline: "Fixture headline",
       intro: "Fixture intro.",
       availability: "roles",
-      links: { linkedin: "https://example.com/linkedin", github: "https://example.com/github" },
-      email: "fixture@example.com",
+      links: { linkedin: "https://fixture.test/linkedin", github: "https://fixture.test/github" },
+      email: "fixture@fixture.test",
     });
     expect(about.experience.map((entry) => entry.role)).toEqual([
       "Current role",
@@ -311,4 +311,103 @@ describe("loadContent: warnings", () => {
       'content/work/alpha.md: the case study has no "## Outcome" section. Recommended, not required.',
     ]);
   });
+});
+
+describe("loadContent: launch guards (spec 0010 AC-1, AC-1b)", () => {
+  const withPlaceholderAlt = (source: string) =>
+    source.replace(/alt: "[^"]*"/, 'alt: "Placeholder cover"');
+  const placeholderRoot = () =>
+    fixtureRoot({
+      "content/work/alpha.md": withPlaceholderAlt(
+        readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8"),
+      ),
+    });
+  const placeholderHit = {
+    file: "content/work/alpha.md",
+    field: "cover.alt",
+    message: 'contains "placeholder". Replace it with real content before it goes live',
+  };
+
+  afterEach(() => {
+    vi.doUnmock("@/lib/seo/site");
+    vi.resetModules();
+  });
+
+  it("fails an indexable build (production and launched) on a marker, listing file and field", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/seo/site", async (original) => ({
+      ...(await original<object>()),
+      SITE_LAUNCHED: true,
+    }));
+    const { loadContent: launchedLoad } = await import("./load");
+    // A fresh module graph, so match on the message rather than the ContentError class.
+    let thrown: unknown;
+    try {
+      launchedLoad({ rootDir: placeholderRoot(), appEnv: "production", currentYear: 2026 });
+    } catch (error) {
+      thrown = error;
+    }
+    expect(String(thrown)).toContain('contains "placeholder"');
+    expect((thrown as { problems?: unknown[] } | undefined)?.problems).toContainEqual(
+      placeholderHit,
+    );
+  });
+
+  it("only warns in production before launch, listing the same hits", () => {
+    const { warnings, projects } = load(placeholderRoot(), { appEnv: "production" });
+    expect(projects.length).toBeGreaterThan(0);
+    expect(warnings.join("\n")).toContain(
+      'content/work/alpha.md · cover.alt: contains "placeholder"',
+    );
+  });
+
+  it("only warns in previews", () => {
+    const { warnings } = load(placeholderRoot(), { appEnv: "preview" });
+    expect(warnings.join("\n")).toContain(
+      'content/work/alpha.md · cover.alt: contains "placeholder"',
+    );
+  });
+
+  it("fails in strict mode (content:check in production) on a field or a file name", () => {
+    const root = placeholderRoot();
+    writeFileSync(path.join(root, "public/images/work/placeholder-extra.png"), "x");
+    writeFileSync(path.join(root, "public/cv/example.com.pdf"), "x");
+
+    const { problems } = problemsFor(root, { appEnv: "production", placeholders: "error" });
+    expect(problems).toContainEqual(placeholderHit);
+    expect(problems.map(({ file }) => file)).toEqual(
+      expect.arrayContaining([
+        "public/images/work/placeholder-extra.png",
+        "public/cv/example.com.pdf",
+      ]),
+    );
+  });
+
+  it("passes clean fixture content in strict mode", () => {
+    expect(() =>
+      load(fixtureRoot(), { appEnv: "production", placeholders: "error" }),
+    ).not.toThrow();
+  });
+
+  it.each(["preview", "production"] as const)(
+    "fails on an oversized cover, photo or CV in %s",
+    (appEnv) => {
+      const root = fixtureRoot({
+        "public/images/work/alpha.svg": `<svg xmlns="http://www.w3.org/2000/svg">${"x".repeat(300 * 1024)}</svg>`,
+        "public/images/about/me.svg": `<svg xmlns="http://www.w3.org/2000/svg">${"x".repeat(250 * 1024)}</svg>`,
+        "public/cv/cv.pdf": "x".repeat(5 * 1024 * 1024 + 1),
+      });
+
+      const found = problemsFor(root, { appEnv }).problems.map(
+        ({ file, field }) => `${file} ${field}`,
+      );
+      expect(found).toEqual(
+        expect.arrayContaining([
+          "content/work/alpha.md cover.src",
+          "content/pages/about.md photo.src",
+          "content/pages/about.md cv.file",
+        ]),
+      );
+    },
+  );
 });

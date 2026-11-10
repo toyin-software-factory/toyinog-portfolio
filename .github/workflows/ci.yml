@@ -119,8 +119,17 @@ jobs:
           cp .dev.vars.example .dev.vars
           grep -qx 'CONTACT_TO_EMAIL=' .dev.vars || { echo "::error::CONTACT_TO_EMAIL must stay empty in CI"; exit 1; }
 
-      # Other production style checks go here, before the browser install, for example
-      # `APP_ENV=production pnpm content:check` (spec 0010).
+      # Other production style checks go here, before the browser install.
+
+      # Spec 0010 AC-1: a production build must never ship placeholder text or files.
+      # Today's content is all placeholder, so this step reports every hit without
+      # failing the job. The content task (spec 0010 build plan step 3) removes
+      # continue-on-error so it becomes required.
+      - name: Placeholder guard (production content check)
+        continue-on-error: true
+        env:
+          APP_ENV: production
+        run: pnpm content:check
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium

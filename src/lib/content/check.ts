@@ -1,6 +1,10 @@
 /**
  * `pnpm content:check`: validates everything in content/ without a full build.
  * Exits with code 1 and lists every problem when anything is wrong.
+ *
+ * With `APP_ENV=production` it is strict about placeholder content whether or not
+ * the site has launched (spec 0010 AC-1), so CI reports a leak before any merge.
+ * Builds only become strict at launch (see `placeholders` in ./load.ts).
  */
 import { getAppEnv } from "@/lib/env";
 
@@ -13,6 +17,7 @@ try {
     rootDir: process.cwd(),
     appEnv,
     currentYear: new Date().getFullYear(),
+    placeholders: appEnv === "production" ? "error" : "warn",
   });
   for (const warning of snapshot.warnings) console.warn(`warning: ${warning}`);
   const drafts = snapshot.projects.filter((project) => project.draft).length;

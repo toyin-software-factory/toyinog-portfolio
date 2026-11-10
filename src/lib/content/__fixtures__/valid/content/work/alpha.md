@@ -11,7 +11,7 @@ cover:
 featured: true
 links:
   - label: Live site
-    url: https://example.com/alpha
+    url: https://fixture.test/alpha
 order: 2
 draft: false
 ---
@@ -22,7 +22,7 @@ Fixture.
 
 ## What I did
 
-Fixture with an [external link](https://example.com).
+Fixture with an [external link](https://fixture.test).
 
 ## Outcome
 

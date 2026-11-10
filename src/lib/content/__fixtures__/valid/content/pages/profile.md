@@ -4,9 +4,9 @@ headline: Fixture headline
 intro: Fixture intro.
 availability: roles
 links:
-  linkedin: https://example.com/linkedin
-  github: https://example.com/github
-email: fixture@example.com
+  linkedin: https://fixture.test/linkedin
+  github: https://fixture.test/github
+email: fixture@fixture.test
 ---
 
 This body is ignored.

@@ -65,4 +65,19 @@ describe("content:check script", { timeout: 30_000 }, () => {
     // The friendly message, not a stack trace.
     expect(err).not.toMatch(/\n\s+at /);
   });
+
+  it("fails on placeholder content with APP_ENV=production, launched or not (spec 0010 AC-1)", () => {
+    const alpha = readFileSync(path.join(FIXTURES, "valid", "content/work/alpha.md"), "utf8");
+    const root = fixtureRoot({
+      "content/work/alpha.md": alpha.replace(/title: "[^"]*"/, 'title: "Placeholder title"'),
+    });
+
+    const production = runCheck(root, { APP_ENV: "production" });
+    expect(production.code).toBe(1);
+    expect(production.err).toContain('content/work/alpha.md\n  - title: contains "placeholder"');
+
+    const preview = runCheck(root);
+    expect(preview.code).toBe(0);
+    expect(preview.err).toContain('content/work/alpha.md · title: contains "placeholder"');
+  });
 });

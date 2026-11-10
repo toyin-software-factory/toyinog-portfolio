@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Launch guards: the content check lists every "placeholder" and "example.com" left in the content (front matter, text and file names) by file and field. It fails `APP_ENV=production pnpm content:check` and the launched production build, and warns everywhere else. Covers over 300 KB, the photo over 250 KB and a CV over 5 MB fail every build (see spec 0010).
+- The site stays out of search until launch: `SITE_LAUNCHED` (false for now) keeps even production builds on `noindex`, with no sitemap in `robots.txt`, until the go live PR (see spec 0010).
 - CI also runs the environment aware end to end tests against a production style build (`e2e (production style)` job, `pnpm test:e2e:production`), so production only behaviour such as the analytics beacon is checked on every pull request instead of by hand. The contact form can't send from it (see spec 0001).
 - Cookie free visitor analytics: the live site loads Cloudflare Web Analytics' beacon, which counts page views and referrers with no cookies and no local storage, so no consent banner is needed. It runs only in production with a token set, never in previews, local development or CI. A view of `/contact/sent` counts as a contact conversion (see spec 0009).
 - Search and sharing: every public page has its own canonical URL, title, description and share card (Open Graph and Twitter). Pages use a branded 1200x630 share image, and case studies use their cover (see spec 0008).

@@ -35,11 +35,11 @@ function fixtureRoot(changes: Record<string, string> = {}): string {
   return root;
 }
 
-function runGenerate(cwd: string) {
+function runGenerate(cwd: string, appEnv: "preview" | "production" = "preview") {
   const result = spawnSync(TSX, ["--tsconfig", path.join(REPO, "tsconfig.json"), SCRIPT], {
     cwd,
     encoding: "utf8",
-    env: { ...process.env, APP_ENV: "preview", WORKERS_CI_BRANCH: "" },
+    env: { ...process.env, APP_ENV: appEnv, WORKERS_CI_BRANCH: "" },
   });
   return { code: result.status, out: result.stdout, err: result.stderr };
 }
@@ -89,7 +89,7 @@ describe("content:generate script", { timeout: 30_000 }, () => {
     expect(out).toContain(`Wrote ${SHELL_PROFILE_MODULE_PATH}`);
     const source = readFileSync(path.join(root, SHELL_PROFILE_MODULE_PATH), "utf8");
     expect(source).toContain('"name": "Fixture Person"');
-    expect(source).toContain('"email": "fixture@example.com"');
+    expect(source).toContain('"email": "fixture@fixture.test"');
     expect(source).toContain(`BUILD_YEAR: number = ${String(new Date().getFullYear())}`);
     // Nothing beyond the shell's fields.
     expect(source).not.toContain("availability");
@@ -104,5 +104,26 @@ describe("content:generate script", { timeout: 30_000 }, () => {
     expect(err).toContain("Fix them and build again.");
     expect(err).toContain("content/work/alpha.md\n  - year: should be a number");
     expect(existsSync(path.join(root, SHELL_PROFILE_MODULE_PATH))).toBe(false);
+  });
+
+  // content:generate is the first step of `pnpm build`. Before launch a production build
+  // only warns about placeholder content, so main keeps deploying; it turns strict once
+  // SITE_LAUNCHED is true (tested on the loader in load.test.ts). Sizes fail it any time.
+  it("lets a production build through placeholder content before launch (spec 0010 AC-1)", () => {
+    const alpha = readFileSync(path.join(FIXTURES, "valid/content/work/alpha.md"), "utf8");
+    const root = fixtureRoot({
+      "content/work/alpha.md": alpha.replace(/title: "[^"]*"/, 'title: "Placeholder title"'),
+    });
+    expect(runGenerate(root, "production").code).toBe(0);
+    expect(existsSync(path.join(root, SHELL_PROFILE_MODULE_PATH))).toBe(true);
+  });
+
+  it("stops a build on an oversized cover in any environment (spec 0010 AC-1b)", () => {
+    const big = `<svg xmlns="http://www.w3.org/2000/svg">${"x".repeat(300 * 1024)}</svg>`;
+    for (const appEnv of ["preview", "production"] as const) {
+      const result = runGenerate(fixtureRoot({ "public/images/work/alpha.svg": big }), appEnv);
+      expect(result.code).toBe(1);
+      expect(result.err).toContain("The limit is 300 KB");
+    }
   });
 });

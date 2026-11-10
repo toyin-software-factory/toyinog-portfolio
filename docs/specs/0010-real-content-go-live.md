@@ -1,7 +1,7 @@
 # 0010. Real content and go live on toyinog.com
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

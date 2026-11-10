@@ -1,4 +1,5 @@
 import type { AppEnv } from "../env";
+import { SITE_LAUNCHED } from "./site";
 
 /**
  * Whether search engines may index this build (spec 0008 AC-5). The one place
@@ -6,10 +7,11 @@ import type { AppEnv } from "../env";
  * header in `next.config.ts` all ask here. Relative imports only, because
  * `next.config.ts` loads this file outside the `@/` alias.
  *
- * Today: production only. Go live (spec 0010) adds its launch switch here.
+ * Indexable only in production after launch (spec 0010 AC-1c): `SITE_LAUNCHED`
+ * is the launch switch, passed in here so tests can try both states.
  */
-export function isIndexable(appEnv: AppEnv): boolean {
-  return appEnv === "production";
+export function isIndexable(appEnv: AppEnv, launched: boolean = SITE_LAUNCHED): boolean {
+  return appEnv === "production" && launched;
 }
 
 /** The `X-Robots-Tag` header for builds that must stay out of search. */

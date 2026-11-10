@@ -10,7 +10,8 @@ Typed, validated site content, read at build time only. Contract: [spec 0002](..
 - `issues.ts` and `errors.ts`: turn zod issues into one `ContentError` with plain word messages grouped by file.
 - `markdown.ts`: `renderMarkdown()`, the only Markdown to HTML path (no raw HTML, unsafe URLs stripped, heading ids, `rel="noopener noreferrer"` on external links).
 - `text.ts`: plain text helpers over `renderMarkdown()` output (`firstParagraphText`).
-- `check.ts`: the `pnpm content:check` script. CI runs it before the unit tests.
+- `check.ts`: the `pnpm content:check` script. CI runs it before the unit tests (preview), and again with `APP_ENV=production` in the production style job, where it is strict about placeholders (spec 0010 AC-1).
+- `guards.ts`: launch guards (spec 0010). `placeholderProblems()` finds `placeholder` and `example.com` in front matter strings, Markdown bodies and file names under `public/images` and `public/cv`. `sizeProblem()` enforces covers up to 300 KB, the photo up to 250 KB and the CV up to 5 MB. The loader applies them: sizes always fail, and placeholders fail only in strict mode (`placeholders: "error"`). Strict is the default when `isIndexable()`, and `content:check` sets it for `APP_ENV=production`.
 - `shell-profile.ts` and `generate.ts`: `pnpm content:generate` writes the shell's profile values and the build year to `generated/shell-profile.ts` (gitignored). `dev`, `build`, `lint`, `typecheck` and `test` run it first. The root layout imports that module instead of the loader (spec 0004 AC-12). It validates all content, so it fails exactly like `content:check`.
 
 ## Rules
@@ -19,6 +20,7 @@ Typed, validated site content, read at build time only. Contract: [spec 0002](..
 - Every new content route must be prerendered and added to `tests/e2e/static.spec.ts`.
 - Drafts depend on `getAppEnv()` (`src/lib/env.ts`), never on `NODE_ENV` or a direct `process.env` read.
 - A new or changed field goes into `schema.ts`, the placeholder files, `content/README.md` and spec 0002 together. Error messages stay in plain words and name the file and field.
+- Fixtures and test data use the reserved `.test` domain (never `example.com`), so they pass the strict guard.
 - Tests use the fixtures in `__fixtures__/` (copied to a temp folder per test), not the real `content/`, except `index.test.ts`, which checks the real placeholder content.
 
 _Drafted by /sync from the introducing change, worth a quick human pass._

@@ -60,6 +60,7 @@ describe("content getters on the real content", () => {
     expect(preview.getProject(draft.slug)?.draft).toBe(true);
     expect(preview.getProjectSlugs()).toContain(draft.slug);
 
+    // Before launch, production builds only warn about today's placeholder content (spec 0010 AC-1).
     const production = await loadModule("production");
     expect(production.getProjects().some((project) => project.draft)).toBe(false);
     expect(production.getProjectSlugs()).not.toContain(draft.slug);
