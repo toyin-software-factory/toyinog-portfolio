@@ -14,7 +14,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
-| 1 | Stack & architecture | Foundation | planned |
+| 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | planned |
 | 3 | Content model | Foundation | planned |
 | 4 | Design system & UI foundation | Foundation | planned |
@@ -28,10 +28,13 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 
 ## Foundations
 
-### 1. Stack & architecture · needs a decision
+### 1. Stack & architecture · in-progress
 Decide the framework, hosting and how the site deploys, then scaffold a runnable project that deploys to a preview link, so every later page builds on real structure.
 **Done when:** the stack and hosting are recorded in a spec, the empty site builds and runs locally, CI runs lint, typecheck, test and build on every PR, and each PR gets a preview deployment.
-- [ ] Decide the stack (spec): `/architect stack & architecture`
+- [x] Decide the stack (spec): `/architect stack & architecture`
+- [ ] Scaffold from the decision: `/develop stack & architecture`
+- [ ] Verify it: `/check verify stack & architecture`
+Spec [0001](../specs/0001-stack-architecture/index.md)
 
 ### 2. Coding standards & tooling
 Capture conventions and tooling choices from the real scaffolded project into root `AGENTS.md`, then install them (TypeScript strict, zod for external input, small accessible components).
