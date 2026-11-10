@@ -14,6 +14,7 @@ export function formatPath(path: readonly PathSegment[]): string {
   }, "");
 }
 
+/** Describes a front matter value in plain words, for "but it is …" messages. */
 function describe(value: unknown): string {
   if (value === null) return "empty";
   if (value instanceof Date) return "a full date";
@@ -41,6 +42,7 @@ const EXPECTED: Record<string, string> = {
   object: "a group of fields",
 };
 
+/** A plain words message for a too short or too long text, list or number. */
 function sizeMessage(
   origin: string,
   limit: number | bigint,
@@ -59,6 +61,7 @@ function sizeMessage(
   }
 }
 
+/** The plain words reason for one zod issue. Custom messages from the schema pass through. */
 function message(issue: Issue): string {
   switch (issue.code) {
     case "invalid_type":

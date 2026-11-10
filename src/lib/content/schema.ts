@@ -33,6 +33,10 @@ const httpsUrl = z
     "should be a web address starting with https://",
   );
 
+/**
+ * A path to a file in `public/`: it must start with `folder`, use a safe path,
+ * end in one of `extensions`, and point to a file that exists.
+ */
 function publicFile(
   options: SchemaOptions,
   folder: string,
@@ -55,6 +59,7 @@ function publicFile(
     });
 }
 
+/** An image with its required, non empty alt text (WCAG AA). */
 function image(options: SchemaOptions, folder: string) {
   return z.strictObject({
     src: publicFile(options, folder, IMAGE_EXTENSIONS, "an image"),
@@ -67,6 +72,7 @@ function image(options: SchemaOptions, folder: string) {
   });
 }
 
+/** Builds the project, profile and about schemas for one build (current year, file checks). */
 export function createSchemas(options: SchemaOptions) {
   const project = z.strictObject({
     title: text.max(80),

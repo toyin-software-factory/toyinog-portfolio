@@ -44,6 +44,7 @@ interface ParsedFile {
   body: string;
 }
 
+/** Uses `/` in file paths on every OS, so error messages look the same everywhere. */
 function toPosix(file: string): string {
   return file.split(path.sep).join("/");
 }
@@ -53,6 +54,7 @@ export function compareProjects(a: Project, b: Project): number {
   return a.order - b.order || b.year - a.year || a.title.localeCompare(b.title, "en");
 }
 
+/** The reason and line number from a YAML parse error, when the parser gives them. */
 function yamlReason(error: unknown): string {
   if (error instanceof Error) {
     const detail = error as Error & { reason?: unknown; mark?: { line?: unknown } };
@@ -64,6 +66,11 @@ function yamlReason(error: unknown): string {
   return String(error);
 }
 
+/**
+ * Reads and validates every content file under `rootDir`, applies the collection
+ * rules (featured cap, unique slugs, drafts, sort order) and renders the Markdown.
+ * Throws one `ContentError` listing every problem it found.
+ */
 export function loadContent(options: LoadOptions): ContentSnapshot {
   const { rootDir, appEnv, currentYear } = options;
   const publicDir = path.join(rootDir, "public");
@@ -72,6 +79,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
 
   const relative = (absolute: string) => toPosix(path.relative(rootDir, absolute));
 
+  /** Whether a site path like `/images/a.webp` is a real file inside `public/` (never outside it). */
   const publicFileExists = (sitePath: string): boolean => {
     const absolute = path.resolve(publicDir, `.${sitePath}`);
     if (!absolute.startsWith(publicDir + path.sep)) return false;
@@ -84,6 +92,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
 
   const schemas = createSchemas({ currentYear, publicFileExists });
 
+  /** Reads one file and splits front matter from body. Records a problem and returns undefined when it can't. */
   const readFile = (absolute: string): ParsedFile | undefined => {
     const file = relative(absolute);
     if (!existsSync(absolute)) {
@@ -105,6 +114,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
     }
   };
 
+  /** Parses front matter with a schema. Records every issue as a problem and returns undefined when invalid. */
   function validate<Schema extends z.ZodType>(
     schema: Schema,
     absolute: string,
@@ -116,6 +126,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
     return undefined;
   }
 
+  /** Records a problem when the Markdown body below the front matter is empty. */
   const requireBody = (absolute: string, body: string, what: string): boolean => {
     if (body.trim()) return true;
     problems.push({

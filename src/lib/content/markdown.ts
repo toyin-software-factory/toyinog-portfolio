@@ -12,6 +12,7 @@ import { SITE_URL } from "@/lib/site";
 const SAFE_PROTOCOLS = new Set(["http:", "https:", "mailto:"]);
 const URL_ATTRIBUTES = ["href", "src"] as const;
 
+/** True for relative URLs, anchors, and http, https or mailto links. False for `javascript:` and similar. */
 function isSafeUrl(value: string): boolean {
   // Browsers ignore control characters and whitespace in a scheme, so strip them before checking.
   const cleaned = value.replace(/[\u0000- \u007f]/g, "");
@@ -20,6 +21,7 @@ function isSafeUrl(value: string): boolean {
   return SAFE_PROTOCOLS.has(`${scheme[1].toLowerCase()}:`);
 }
 
+/** Narrows a hast node to an element. */
 function isElement(node: RootContent): node is Element {
   return node.type === "element";
 }
@@ -38,12 +40,14 @@ function stripUnsafeUrls(node: Root | Element): void {
   }
 }
 
+/** rehype plugin wrapper for `stripUnsafeUrls`. */
 function rehypeSafeUrls() {
   return (tree: Root) => {
     stripUnsafeUrls(tree);
   };
 }
 
+/** True for absolute http(s) links that point away from the site's own origin. */
 function isExternalLink(element: Element): boolean {
   const href = element.properties.href;
   if (typeof href !== "string" || !/^https?:\/\//i.test(href)) return false;
@@ -68,6 +72,7 @@ const processor = unified()
   .use(rehypeExternalLinks, { rel: ["noopener", "noreferrer"], test: isExternalLink })
   .use(rehypeStringify);
 
+/** Renders Markdown to safe HTML at build time (see `processor` for the rules). */
 export function renderMarkdown(markdown: string): string {
   return String(processor.processSync(markdown));
 }

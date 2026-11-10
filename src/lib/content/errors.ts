@@ -8,6 +8,7 @@ export interface ContentProblem {
   message: string;
 }
 
+/** One problem as an indented bullet, with its field name when it has one. */
 function formatProblem(problem: ContentProblem): string {
   return problem.field ? `  - ${problem.field}: ${problem.message}` : `  - ${problem.message}`;
 }

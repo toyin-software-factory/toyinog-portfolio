@@ -26,6 +26,7 @@ export type {
 
 let cached: ContentSnapshot | undefined;
 
+/** Loads all content once per build (fresh each call in `next dev`) and prints any warnings once. */
 function content(): ContentSnapshot {
   // In `next dev` read fresh each time, so content edits show without a restart.
   if (cached && process.env.NODE_ENV !== "development") return cached;
@@ -64,6 +65,7 @@ export function getProjectSlugs(): string[] {
   return getProjects().map((project) => project.slug);
 }
 
+/** The site profile: name, headline, intro, availability, links and email. */
 export function getProfile(): Profile {
   return content().profile;
 }
