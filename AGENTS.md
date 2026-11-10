@@ -39,6 +39,7 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (or `NNNN-title/inde
 - Named exports only, except where Next.js requires a default export (pages, layouts, route files, config).
 - Content routes are statically generated. Content is read only at build time through `src/lib/content/` (server only). Never read files at runtime on Workers.
 - Production vs preview comes from `getAppEnv()` in `src/lib/env.ts` only.
+- Design system: build all UI to `design.md` (art direction, tokens, components); token values live in `src/app/globals.css`, components in `src/components/ui/`.
 - Accessible by default (WCAG AA): semantic HTML, full keyboard support, visible focus, AA contrast, alt text on every image.
 - Tests: unit tests for logic, a Playwright spec per page and flow with an axe check.
 - Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`). PR titles `[TASK-ID] …`. Secrets only in env vars or Worker secrets, never committed.
@@ -62,6 +63,7 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (or `NNNN-title/inde
 
 <!-- Nested AGENTS.md files are listed here as they are created -->
 - [src/lib/content/AGENTS.md](src/lib/content/AGENTS.md): content loader, schemas, Markdown pipeline and their build time only rules
+- [src/components/ui/AGENTS.md](src/components/ui/AGENTS.md): the base components, token only styling, focus, touch target and test rules
 - [src/components/site/AGENTS.md](src/components/site/AGENTS.md): the site shell (header, nav, footer) and its rules
 - [src/lib/contact/AGENTS.md](src/lib/contact/AGENTS.md): the contact form flow (spec 0007), its secrets, dry run and logging rules
 

@@ -14,26 +14,26 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
-| 1 | Stack & architecture | Foundation | in-progress |
+| 1 | Stack & architecture | Foundation | done |
 | 2 | Coding standards & tooling | Foundation | done |
 | 3 | Content model | Foundation | done |
-| 4 | Design system & UI foundation | Foundation | in-progress |
+| 4 | Design system & UI foundation | Foundation | done |
 | 5 | Site shell & Home | Release 1 | done |
 | 6 | Work list & case studies | Release 1 | done |
 | 7 | About & CV | Release 1 | in-progress |
-| 8 | Contact form | Release 1 | in-progress |
+| 8 | Contact form | Release 1 | done |
 | 9 | SEO & social sharing | Release 2 | in-progress |
 | 10 | Visitor analytics | Release 2 | in-progress |
 | 11 | Real content & go live | Release 2 | planned |
 
 ## Foundations
 
-### 1. Stack & architecture · in-progress
+### 1. Stack & architecture · done
 Decide the framework, hosting and how the site deploys, then scaffold a runnable project that deploys to a preview link, so every later page builds on real structure.
 **Done when:** the stack and hosting are recorded in a spec, the empty site builds and runs locally, CI runs lint, typecheck, test and build on every PR, and each PR gets a preview deployment.
 - [x] Decide the stack (spec): `/architect stack & architecture`
 - [x] Scaffold from the decision: `/develop stack & architecture` (PR #9)
-- [ ] Verify it: `/check verify stack & architecture`
+- [x] Verify it: `/check verify stack & architecture`
 Spec [0001](../specs/0001-stack-architecture/index.md)
 
 ### 2. Coding standards & tooling · done
@@ -57,7 +57,7 @@ The shape of the Markdown content files: projects and case studies, the bio, exp
 - [x] Document it: `/document content model`
 Spec [0002](../specs/0002-content-model.md) · code in `src/lib/content/`, `content/` · verify report [docs/reviews/2026-11-10-verify-content-model.md](../reviews/2026-11-10-verify-content-model.md)
 
-### 4. Design system & UI foundation · in-progress
+### 4. Design system & UI foundation · done
 Visual direction from Mobbin references, plus type, colour, spacing and base components, so all four pages feel like one site and meet WCAG AA.
 **Done when:** `design.md` records the direction and its Mobbin references, covers type, colour, spacing and components, and base components handle focus, keyboard and contrast at mobile and desktop widths.
 - [x] Design it (spec): `/architect design system & UI foundation`
@@ -66,10 +66,10 @@ Visual direction from Mobbin references, plus type, colour, spacing and base com
    - [x] Layout, text and action components (AC-3, AC-4, AC-8)
    - [x] Form primitives (AC-3, AC-4)
    - [x] Styleguide route, token guard, axe at both widths (AC-1, AC-6, AC-7)
-- [ ] Verify it: `/check verify design system & UI foundation`
-- [ ] Test it: `/test design system & UI foundation`
-- [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document design system & UI foundation`
+- [x] Verify it: `/check verify design system & UI foundation`
+- [x] Test it: `/test design system & UI foundation`
+- [x] Review it: CodeRabbit on the PR
+- [x] Document it: `/document design system & UI foundation`
 Spec [0003](../specs/0003-design-system.md) · `design.md` · code in `src/components/ui/`, `src/app/styleguide/`
 
 ## Release 1: the smallest usable site
@@ -118,7 +118,7 @@ Bio, experience, skills and a CV download, for hiring managers who want the full
 - [ ] Document it: `/document about & cv`
 Spec [0006](../specs/0006-about-cv.md)
 
-### 8. Contact form · in-progress
+### 8. Contact form · done
 A form (name, email, hiring or project, message) that emails Toyin, with spam protection. Links to email and profiles sit beside it.
 **Done when:** a valid submission reaches Toyin's inbox with the hiring or project choice, input is validated on the server, spam and repeat submissions are blocked, and the visitor sees clear success and error states. No keys reach the browser.
 - [x] Design it (spec): `/architect contact form`
@@ -130,7 +130,7 @@ A form (name, email, hiring or project, message) that emails Toyin, with spam pr
    - [x] Sent page and Playwright with axe (AC-10, AC-13)
 - [x] Verify it: `/check verify contact form`
 - [x] Test it: `/test contact form`
-- [ ] Review it: CodeRabbit on the PR
+- [x] Review it: CodeRabbit on the PR
 - [x] Document it: `/document contact form`
 Spec [0007](../specs/0007-contact-form.md) · code in `src/app/contact/`, `src/lib/contact/`
 
