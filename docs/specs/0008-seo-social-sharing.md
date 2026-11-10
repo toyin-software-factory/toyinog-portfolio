@@ -21,7 +21,7 @@ Scope feature 9. Toyin wants the site to be found by recruiters and clients, and
 - **AC-5**: `robots.ts` returns allow all plus the sitemap URL when `getAppEnv()` is `production`, and disallow all otherwise. The root metadata also sets `robots: { index: false }` outside production.
 - **AC-6**: The sitemap includes `/`, `/work`, every published case study, `/about` and `/contact` with `lastModified` (the build date), and excludes `/contact/sent`, `/styleguide` and drafts.
 - **AC-7**: The site has a favicon (`src/app/icon.svg`, a lemon "T" on Carbon Black) and an Apple touch icon (`src/app/apple-icon.png`, 180x180).
-- **AC-8**: A Playwright test reads every sitemap URL in a production style build and checks AC-1 to AC-4 on each page.
+- **AC-8**: A Playwright test reads every sitemap URL in a production style build and checks AC-1 to AC-4 on each page. It runs in CI's `e2e (production style)` job (`pnpm test:e2e:production`): `seo.spec.ts` is listed in `tests/e2e/env.ts`, so the whole file runs against both builds.
 
 ## Options considered
 
