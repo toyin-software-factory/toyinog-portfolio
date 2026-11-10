@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # One-time setup inside an HQ agent sandbox (Debian, passwordless sudo):
-# Node 22 LTS, agent-browser (pinned), Chrome for Testing with its system libraries, ffmpeg.
+# Node 22 LTS, agent-browser (pinned), Chrome for Testing with its system libraries, ffmpeg,
+# and Chrome trust for the sandbox egress proxy's CA (Chrome reads its own NSS store, not the system one).
 # Safe to re-run; it skips what is already there. Installs last until the sandbox is recreated.
 # Usage: bash scripts/agent-browser-setup.sh
 set -euo pipefail
@@ -8,14 +9,14 @@ AB_VERSION="0.39.4"   # vercel-labs/agent-browser; bump deliberately, in a PR
 
 need() { ! command -v "$1" >/dev/null 2>&1; }
 
-echo "== system packages (curl, xz, ffmpeg)"
-if need ffmpeg || need xz || need curl; then
+echo "== system packages (curl, xz, ffmpeg, certutil)"
+if need ffmpeg || need xz || need curl || need certutil; then
   sudo apt-get update -qq
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends ca-certificates curl xz-utils ffmpeg >/dev/null
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends ca-certificates curl xz-utils ffmpeg libnss3-tools >/dev/null
 fi
 
 echo "== Node 22 LTS"
-if need node || [ "$(node -p 'process.versions.node.split(".")[0]')" -lt 20 ]; then
+if need node || [ "$(node -p 'process.versions.node.split(".")[0]')" -lt 22 ]; then
   case "$(uname -m)" in x86_64) arch=x64 ;; aarch64) arch=arm64 ;; *) echo "unsupported CPU $(uname -m)" >&2; exit 1 ;; esac
   base="https://nodejs.org/dist/latest-v22.x"
   tmp="$(mktemp -d)"
@@ -34,6 +35,30 @@ if need agent-browser || [ "$(agent-browser --version 2>/dev/null | grep -o '[0-
 fi
 echo "== Chrome for Testing and its libraries"
 agent-browser install --with-deps </dev/null
+
+echo "== Chrome trusts the sandbox's CAs"
+# The sandbox proxy re-signs HTTPS with its own CA, which is in the system bundle (curl works) but not in
+# Chrome's NSS store, so pages fail with ERR_CERT_AUTHORITY_INVALID. Copy the system bundle (plus any extra
+# bundle named in the environment) into the user's NSS store. Only CAs this sandbox already trusts are added.
+db="sql:$HOME/.pki/nssdb"
+mkdir -p "$HOME/.pki/nssdb"
+[ -f "$HOME/.pki/nssdb/cert9.db" ] || certutil -N -d "$db" --empty-password
+bundles=(/etc/ssl/certs/ca-certificates.crt)
+for v in NODE_EXTRA_CA_CERTS SSL_CERT_FILE CURL_CA_BUNDLE REQUESTS_CA_BUNDLE; do
+  f="${!v:-}"; [ -n "$f" ] && [ -f "$f" ] && bundles+=("$f")
+done
+stamp="$HOME/.pki/nssdb/.imported"
+sum="$(cat "${bundles[@]}" | sha256sum | cut -d' ' -f1)"
+if [ "$(cat "$stamp" 2>/dev/null)" != "$sum" ]; then
+  split="$(mktemp -d)"
+  cat "${bundles[@]}" | awk -v d="$split" '/-----BEGIN CERTIFICATE-----/{n++; f=sprintf("%s/%04d.pem", d, n)} f{print > f} /-----END CERTIFICATE-----/{close(f); f=""}'
+  for c in "$split"/*.pem; do
+    certutil -A -d "$db" -t "C,," -n "sandbox-ca-$(sha256sum "$c" | cut -c1-16)" -i "$c" >/dev/null 2>&1 || true
+  done
+  echo "imported $(ls "$split" | wc -l) CA certificates"
+  rm -rf "$split"
+  printf '%s' "$sum" > "$stamp"
+fi
 
 echo "== smoke test"
 s="setup-$$"
