@@ -154,13 +154,13 @@ Spec [0008](../specs/0008-seo-social-sharing.md)
 Privacy friendly, cookie free analytics: page views, referrers, and a contact form conversion event. No cookie banner needed.
 **Done when:** page views and contact submissions show in the analytics dashboard, no cookies are set, and the script does not hurt page performance.
 - [x] Design it (spec): `/architect visitor analytics`
-- [ ] Build it: `/develop visitor analytics`
+- [x] Build it: `/develop visitor analytics`
    - [x] Production only beacon in the layout (AC-1, AC-2, AC-5)
-   - [ ] No cookies, CSP and performance checks (AC-3, AC-4, AC-6)
-- [ ] Verify it: `/check verify visitor analytics`
-- [ ] Test it: `/test visitor analytics`
+   - [x] No cookies, CSP and performance checks (AC-3, AC-4, AC-6)
+- [x] Verify it: `/check verify visitor analytics`
+- [x] Test it: `/test visitor analytics`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document visitor analytics`
+- [x] Document it: `/document visitor analytics`
 Spec [0009](../specs/0009-visitor-analytics.md) · code in `src/components/site/Analytics.tsx`, `tests/e2e/analytics.spec.ts`
 
 ### 11. Real content & go live · needs a decision

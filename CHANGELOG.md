@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Cookie free visitor analytics: the live site loads Cloudflare Web Analytics' beacon, which counts page views and referrers with no cookies and no local storage, so no consent banner is needed. It runs only in production with a token set, never in previews, local development or CI. A view of `/contact/sent` counts as a contact conversion (see spec 0009).
 - Design system: Toyin's palette, the Instrument Serif and Inter type scale, spacing and radii as Tailwind tokens in one place, with a test that blocks raw colour values in components and pages (see spec 0003).
 - Base components in `src/components/ui/` (layout, headings, Prose for Markdown, links, buttons, badge, tag, card, skip link and form fields), each with a visible lemon focus ring, keyboard support and 44px touch targets (see spec 0003).
 - A preview only `/styleguide` page showing every token and component in its states; it returns 404 in production and stays out of search (see spec 0003).
