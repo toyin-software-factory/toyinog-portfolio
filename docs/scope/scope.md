@@ -22,7 +22,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 6 | Work list & case studies | Release 1 | done |
 | 7 | About & CV | Release 1 | done |
 | 8 | Contact form | Release 1 | done |
-| 9 | SEO & social sharing | Release 2 | in-progress |
+| 9 | SEO & social sharing | Release 2 | done |
 | 10 | Visitor analytics | Release 2 | done |
 | 11 | Real content & go live | Release 2 | in-progress |
 
@@ -136,7 +136,7 @@ Spec [0007](../specs/0007-contact-form.md) · code in `src/app/contact/`, `src/l
 
 ## Release 2: launch ready
 
-### 9. SEO & social sharing · in-progress
+### 9. SEO & social sharing · done
 Page titles and descriptions, social share cards, a sitemap and robots file, and structured data about Toyin, so the site is found and shares well.
 **Done when:** every public page has a unique title, description and share image, the sitemap lists every page including case studies, and share previews render correctly.
 - [x] Design it (spec): `/architect seo & social sharing`
@@ -146,7 +146,7 @@ Page titles and descriptions, social share cards, a sitemap and robots file, and
    - [x] robots by environment, sitemap, icons, sitemap wide check (AC-5..8)
 - [x] Verify it: `/check verify seo & social sharing`
 - [x] Test it: `/test seo & social sharing`
-- [ ] Review it: CodeRabbit on the PR
+- [x] Review it: CodeRabbit on the PR (#36)
 - [x] Document it: `/document seo & social sharing`
 Spec [0008](../specs/0008-seo-social-sharing.md) · code in `src/lib/seo/`, `src/components/seo/`, page metadata exports · verify report [docs/reviews/2026-11-10-verify-seo-social-sharing.md](../reviews/2026-11-10-verify-seo-social-sharing.md)
 
@@ -168,7 +168,7 @@ Toyin replaces the placeholder content with the real bio, case studies and CV, t
 **Done when:** no placeholder content remains, toyinog.com serves the new site over HTTPS, old URLs that mattered redirect sensibly, and a final accessibility and mobile performance check passes.
 - [x] Design it (spec): `/architect real content & go live`
 - [ ] Build it: `/develop real content & go live`
-   - [ ] Launch guards: placeholder and size checks in every build, hidden from search until launch (AC-1, AC-1b, AC-1c)
+   - [x] Launch guards: placeholder and size checks in every build, hidden from search until launch (AC-1, AC-1b, AC-1c)
    - [ ] Real content drafted from Toyin's material and approved on the preview (AC-2 to AC-5)
    - [ ] Pre launch checks and the launch report (AC-6)
    - [ ] Toyin's go, the go live PR, and the live smoke check (AC-7 to AC-11)
@@ -176,7 +176,7 @@ Toyin replaces the placeholder content with the real bio, case studies and CV, t
 - [ ] Test it: `/test real content & go live`
 - [ ] Review it: CodeRabbit on the PRs
 - [ ] Document it: `/document real content & go live`
-Spec [0010](../specs/0010-real-content-go-live.md)
+Spec [0010](../specs/0010-real-content-go-live.md) · launch guards in `src/lib/content/guards.ts`, `src/lib/seo/` · verify note [docs/reviews/2026-11-10-verify-launch-guards.md](../reviews/2026-11-10-verify-launch-guards.md)
 
 ## Deferred
 Out of scope for launch, kept so the plan stays honest.
