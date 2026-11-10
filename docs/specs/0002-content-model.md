@@ -1,7 +1,7 @@
 # 0002. Markdown content model for projects, profile and About
 
 **Date**: 2026-11-10
-**Status**: Accepted
+**Status**: In Progress
 
 ## Summary
 

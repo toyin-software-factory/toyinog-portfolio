@@ -16,7 +16,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 |---|---------|-------|--------|
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | done |
-| 3 | Content model | Foundation | done |
+| 3 | Content model | Foundation | in-progress |
 | 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Site shell & Home | Release 1 | in-progress |
 | 6 | Work list & case studies | Release 1 | in-progress |
@@ -42,7 +42,7 @@ Capture conventions and tooling choices from the real scaffolded project into ro
 - [x] Capture conventions + tooling choices: `/audit`
 - [x] Install the tooling: `/develop tooling`
 
-### 3. Content model · done
+### 3. Content model · in-progress
 The shape of the Markdown content files: projects and case studies, the bio, experience, skills, links, and the CV file. Every page reads from it, and Toyin edits it to update the site.
 **Done when:** each content type has a validated schema, a malformed file fails the build with a clear message, and placeholder files exist for every type.
 - [x] Design it (spec): `/architect content model`
@@ -51,7 +51,7 @@ The shape of the Markdown content files: projects and case studies, the bio, exp
    - [x] Markdown rendering pipeline (AC-7)
    - [x] Placeholder content, assets and content README (AC-8)
    - [x] Fixture tests and `content:check` in CI (AC-3..7)
-- [x] Verify it: `/check verify content model`
+- [x] Verify it: `/check verify content model` (AC-4 route and sitemap part pending RR1-T02)
 - [x] Test it: `/test content model`
 - [x] Review it: CodeRabbit on the PR (#16)
 - [x] Document it: `/document content model`

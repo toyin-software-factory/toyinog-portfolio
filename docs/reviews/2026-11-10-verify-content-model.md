@@ -1,8 +1,8 @@
-# /check verify content model · PASS
+# /check verify content model · PASS, AC-4 partly pending
 
 **Date**: 2026-11-10 · **Spec**: [0002](../specs/0002-content-model.md) · **Scope**: feature 3 · **Run by**: Dwight, during RR1-T01
 
-**PASS: all 10 acceptance criteria met on the real app and content.** One part of AC-4 (drafts kept out of `/work/<slug>` routes and the sitemap) has nothing to act on yet, because those routes come with feature 6. The loader side is proven here; feature 6's verify should repeat the route side.
+**9 of 10 acceptance criteria met on the real app and content. AC-4 is partly verified.** The loader part is verified: drafts are filtered out in production and kept, flagged, in preview. The other part, keeping drafts out of the static `/work/<slug>` routes and the sitemap, is pending. Neither surface exists yet; they come with Work (RR1-T02) and the sitemap work. Spec 0002 stays `In Progress` until that check passes.
 
 Next: `/test content model` for any gaps, then `/document`.
 
@@ -20,7 +20,7 @@ Next: `/test content model` for any gaps, then `/document`.
 | AC-1 | met | Probe: 4 projects parsed, slugs from filenames (`design-system`, `checkout-redesign`, `analytics-dashboard`, `marketing-site`), typed fields `title, summary, role, client, year, tags, cover, links, featured, order, draft, slug, body, html`. |
 | AC-2 | met | Probe: profile has `name, headline, intro, location, availability, links, email`. About has 3 experience entries, 3 skill groups and a CV. |
 | AC-3 | met | Broken content: `content:check`, `pnpm build` and `pnpm test` all exit 1. One message names each file and field in plain words, for example `content/pages/profile.md · headline: should be text, but it is the number 42`, `locaton: is not a known field. Check the spelling, or remove it`, `cv.file: points to a file that does not exist`, `cv.updated: should be a month written as YYYY-MM`. The build fails while prerendering `/` with the same `ContentError`. |
-| AC-4 | met (loader) | `APP_ENV=production pnpm content:check` gives `3 projects visible`. `APP_ENV=preview` gives `4 projects visible (1 draft)`. The probe shows `marketing-site` with `draft true` in preview. No project routes or sitemap entries exist yet (feature 6). |
+| AC-4 | partly verified: loader met, routes and sitemap pending RR1-T02 | `APP_ENV=production pnpm content:check` gives `3 projects visible`. `APP_ENV=preview` gives `4 projects visible (1 draft)`. The probe shows `marketing-site` with `draft true` in preview. Pending: no `/work/<slug>` routes and no project sitemap entries exist yet, so draft exclusion there cannot be observed. Repeat this check in RR1-T02, and when projects join the sitemap. |
 | AC-5 | met | Probe order: design-system (order 1), checkout-redesign (2), analytics-dashboard (3), marketing-site (4). Featured: the first three, same order. |
 | AC-6 | met | Turning the draft into a 4th featured project fails with `featured: 4 published projects are featured (…), but at most 3 can be`. Duplicate slugs can't be produced from real filenames (the slug is the filename), so that path is covered by the fixture test in `load.test.ts` (passing in this run). |
 | AC-7 | met | `renderMarkdown()` output: `<h2 id="hello-world">`; the external link gets `rel="noopener noreferrer"`; the site's own link doesn't; the `javascript:` link loses its `href`; `<script>` is dropped and `<b>raw</b>` comes out as plain `raw`. |
