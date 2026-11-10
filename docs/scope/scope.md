@@ -46,16 +46,16 @@ Capture conventions and tooling choices from the real scaffolded project into ro
 The shape of the Markdown content files: projects and case studies, the bio, experience, skills, links, and the CV file. Every page reads from it, and Toyin edits it to update the site.
 **Done when:** each content type has a validated schema, a malformed file fails the build with a clear message, and placeholder files exist for every type.
 - [x] Design it (spec): `/architect content model`
-- [ ] Build it: `/develop content model`
-   - [ ] Schemas, loader and collection rules (AC-1..6, AC-9, AC-10)
-   - [ ] Markdown rendering pipeline (AC-7)
-   - [ ] Placeholder content, assets and content README (AC-8)
-   - [ ] Fixture tests and `content:check` in CI (AC-3..7)
-- [ ] Verify it: `/check verify content model`
+- [x] Build it: `/develop content model`
+   - [x] Schemas, loader and collection rules (AC-1..6, AC-9, AC-10)
+   - [x] Markdown rendering pipeline (AC-7)
+   - [x] Placeholder content, assets and content README (AC-8)
+   - [x] Fixture tests and `content:check` in CI (AC-3..7)
+- [x] Verify it: `/check verify content model`
 - [ ] Test it: `/test content model`
 - [ ] Review it: CodeRabbit on the PR
 - [ ] Document it: `/document content model`
-Spec [0002](../specs/0002-content-model.md)
+Spec [0002](../specs/0002-content-model.md) · code in `src/lib/content/`, `content/`
 
 ### 4. Design system & UI foundation · in-progress
 Visual direction from Mobbin references, plus type, colour, spacing and base components, so all four pages feel like one site and meet WCAG AA.

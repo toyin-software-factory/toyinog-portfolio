@@ -1,7 +1,7 @@
 # 0002. Markdown content model for projects, profile and About
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -32,7 +32,7 @@ Toyin chose (Content Q1 to Q4): the standard case study, a featured flag plus a 
 - **AC-7**: Case study Markdown bodies render to HTML at build time, with heading ids, external links opening safely (`rel="noopener noreferrer"`), and no raw HTML passed through (Markdown only, so content can't inject scripts).
 - **AC-8**: Placeholder content exists for every type: at least 4 projects (3 featured, 1 draft), a full profile, and a full About with at least 3 experience entries, 3 skill groups and a placeholder CV PDF. All of it is clearly marked as placeholder text.
 - **AC-9**: Every image field has a required alt text field next to it. An empty alt text fails the build (WCAG AA).
-- **AC-10**: The content loader and the Markdown pipeline are imported only from build time code (server components of statically generated routes), never from client components, and they stay out of the Worker bundle per spec 0001.
+- **AC-10**: The content loader and Markdown pipeline are never imported from client components and never run at request time: every content route is prerendered (checked by the e2e prebuilt HTML test). Their code may sit in the Worker bundle; the CI size gate guards the total.
 
 ## Options considered
 

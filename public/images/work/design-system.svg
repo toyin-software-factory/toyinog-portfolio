@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-label="Placeholder image">
+  <rect width="1200" height="750" fill="#dbeafe"/>
+  <path d="M0 0L1200 750M1200 0L0 750" stroke="#1f2937" stroke-opacity="0.15" stroke-width="4"/>
+  <text x="50%" y="46%" fill="#1f2937" font-family="system-ui, sans-serif" font-size="62" font-weight="600" text-anchor="middle" dominant-baseline="middle">PLACEHOLDER</text>
+  <text x="50%" y="58%" fill="#1f2937" font-family="system-ui, sans-serif" font-size="34" text-anchor="middle" dominant-baseline="middle">Cover image for design-system</text>
+</svg>
