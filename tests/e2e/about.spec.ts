@@ -2,14 +2,15 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { loadContent } from "../../src/lib/content/load";
-import { getAppEnv } from "../../src/lib/env";
+
+import { E2E_APP_ENV } from "./env";
 
 const WCAG_AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 // The same About content as the build under test.
 const { about } = loadContent({
   rootDir: process.cwd(),
-  appEnv: getAppEnv(),
+  appEnv: E2E_APP_ENV,
   currentYear: new Date().getFullYear(),
 });
 

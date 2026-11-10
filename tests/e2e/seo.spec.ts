@@ -1,17 +1,18 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { getAppEnv } from "../../src/lib/env";
 import { isIndexable } from "../../src/lib/seo/indexing";
+
+import { E2E_APP_ENV } from "./env";
 
 /**
  * Spec 0008 AC-8: every URL in the sitemap gets checked for AC-1 to AC-4. The
  * expectations follow the environment the build under test was made for
- * (`getAppEnv()`, the same rule as the build), so this runs on a preview build in
- * CI and on a production style build (`APP_ENV=production pnpm preview`) too.
+ * (`E2E_APP_ENV` from ./env.ts), so this runs on the preview build and on the
+ * production style build (`pnpm test:e2e:production`).
  */
 
 const SITE = "https://toyinog.com";
-const indexable = isIndexable(getAppEnv());
+const indexable = isIndexable(E2E_APP_ENV);
 
 type PageSeo = {
   path: string;
@@ -109,6 +110,13 @@ test.beforeAll(async ({ request }) => {
 });
 
 test.describe("sitemap and robots (spec 0008 AC-5, AC-6)", () => {
+  // Guards against the test workers and the server disagreeing about the build
+  // (main went red when they did): /dynamic-check exists only outside production.
+  test(`the server under test is a ${E2E_APP_ENV} build`, async ({ request }) => {
+    const status = (await request.get("/dynamic-check")).status();
+    expect(status).toBe(E2E_APP_ENV === "production" ? 404 : 200);
+  });
+
   test("the sitemap lists the public pages with lastmod, and nothing private", async ({
     request,
   }) => {
@@ -210,7 +218,7 @@ test.describe("every sitemap page (spec 0008 AC-8)", () => {
 
     // Logged for the PR proof.
     console.log(
-      `[seo] ${indexable ? "production" : "preview"} build, ${String(pages.length)} sitemap pages checked:\n` +
+      `[seo] ${E2E_APP_ENV} build (${indexable ? "indexable" : "not indexable"}), ${String(pages.length)} sitemap pages checked:\n` +
         pages
           .map(
             (seo) =>

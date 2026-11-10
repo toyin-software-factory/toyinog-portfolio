@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { getAppEnv } from "../../src/lib/env";
+import { E2E_APP_ENV } from "./env";
 
 /**
  * Spec 0004 AC-12: a route rendered at request time on Workers gets the full
@@ -8,7 +8,7 @@ import { getAppEnv } from "../../src/lib/env";
  * generated at build time). /dynamic-check exists only outside production.
  */
 test.describe("shell on a dynamic route (spec 0004 AC-12)", () => {
-  test.skip(getAppEnv() === "production", "/dynamic-check is a 404 in production builds");
+  test.skip(E2E_APP_ENV === "production", "/dynamic-check is a 404 in production builds");
 
   test("returns 200, rendered on request, with the header and footer", async ({ page }) => {
     const response = await page.goto("/dynamic-check");
