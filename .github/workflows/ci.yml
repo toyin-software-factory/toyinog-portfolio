@@ -25,6 +25,8 @@ jobs:
       WORKER_SIZE_LIMIT_KIB: "3072"
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false # no job here pushes
 
       - uses: pnpm/action-setup@v6 # version comes from package.json packageManager
 
@@ -99,6 +101,8 @@ jobs:
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false # no job here pushes
 
       - uses: pnpm/action-setup@v6 # version comes from package.json packageManager
 
