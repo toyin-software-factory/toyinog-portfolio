@@ -21,7 +21,7 @@ Scope feature 9. Toyin wants the site to be found by recruiters and clients, and
 - **AC-5** (amended 2026-11-10): When the site is indexable (`getAppEnv()` is `production`, and from spec 0010 also `SITE_LAUNCHED`), `robots.ts` returns allow all plus the sitemap URL. Otherwise it returns allow all with no sitemap, so crawlers can fetch pages and see the noindex. Every page then carries `robots: { index: false }` in the root metadata and an `X-Robots-Tag: noindex` response header (from `next.config.ts` `headers()`, chosen at build time). A `Disallow: /` would hide the noindex from crawlers, so a linked preview URL could still be listed in search.
 - **AC-6**: The sitemap includes `/`, `/work`, every published case study, `/about` and `/contact` with `lastModified` (the build date), and excludes `/contact/sent`, `/styleguide` and drafts.
 - **AC-7**: The site has a favicon (`src/app/icon.svg`, a lemon "T" on Carbon Black) and an Apple touch icon (`src/app/apple-icon.png`, 180x180).
-- **AC-8**: A Playwright test reads every sitemap URL and checks AC-1 to AC-4 on each page, with environment aware robots checks. CI runs it on the preview build; the production style run (`APP_ENV=production pnpm preview`) is recorded in the PR until CI gains a production style e2e job (task PF-T07).
+- **AC-8**: A Playwright test reads every sitemap URL and checks AC-1 to AC-4 on each page, with environment aware robots checks. CI runs it on both builds: the preview build in the `ci` job, and a production style build in the `e2e (production style)` job (`pnpm test:e2e:production`, task PF-T07), because `seo.spec.ts` is listed in `tests/e2e/env.ts`. No hand run is needed.
 
 ## Options considered
 

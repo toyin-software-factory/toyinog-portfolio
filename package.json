@@ -23,7 +23,8 @@
     "test:e2e": "playwright test",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "content:check": "tsx src/lib/content/check.ts",
-    "content:generate": "tsx src/lib/content/generate.ts"
+    "content:generate": "tsx src/lib/content/generate.ts",
+    "test:e2e:production": "E2E_ENV=production playwright test"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "1.20.16",

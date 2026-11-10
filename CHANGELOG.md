@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- CI also runs the environment aware end to end tests against a production style build (`e2e (production style)` job, `pnpm test:e2e:production`), so production only behaviour such as the analytics beacon is checked on every pull request instead of by hand. The contact form can't send from it (see spec 0001).
 - Cookie free visitor analytics: the live site loads Cloudflare Web Analytics' beacon, which counts page views and referrers with no cookies and no local storage, so no consent banner is needed. It runs only in production with a token set, never in previews, local development or CI. A view of `/contact/sent` counts as a contact conversion (see spec 0009).
 - Search and sharing: every public page has its own canonical URL, title, description and share card (Open Graph and Twitter). Pages use a branded 1200x630 share image, and case studies use their cover (see spec 0008).
 - Structured data for search engines: Toyin as a Person on Home and About, the site as a WebSite, and each case study as a CreativeWork (see spec 0008).

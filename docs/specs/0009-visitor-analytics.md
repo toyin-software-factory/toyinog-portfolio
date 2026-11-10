@@ -1,7 +1,7 @@
 # 0009. Cookie free visitor analytics with Cloudflare Web Analytics
 
 **Date**: 2026-11-10
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 
@@ -15,8 +15,8 @@ Scope feature 10. Toyin chose Cloudflare Web Analytics (Stack Q5): free, cookie 
 
 **Acceptance criteria**:
 - **AC-1**: When `getAppEnv()` is `production` and `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` is set, every page includes the Cloudflare beacon (`https://static.cloudflareinsights.com/beacon.min.js`, `defer`, `data-cf-beacon='{"token":"<token>"}'`) once, through `next/script` with `strategy="afterInteractive"`, from the root layout.
-- **AC-2**: Outside production, or when the token is missing, no beacon script is rendered (checked in a preview build e2e test).
-- **AC-3**: The beacon sets no cookies and no local storage (checked in a production style e2e run with a dummy token, inspecting the browser context).
+- **AC-2**: Outside production, or when the token is missing, no beacon script is rendered (checked in a preview build e2e test, in CI's `ci` job).
+- **AC-3**: The beacon sets no cookies and no local storage (checked in a production style e2e run with a dummy token, inspecting the browser context: CI's `e2e (production style)` job).
 - **AC-4**: The CSP allows the beacon and its reporting endpoint, and no CSP violations are logged on any page.
 - **AC-5**: `/contact/sent` page views are the conversion metric. No other custom tracking is added.
 - **AC-6**: Mobile Lighthouse performance on Home stays at 90 or above with the beacon present (checked on a local production style `pnpm preview` with a dummy token, so the beacon is present, alongside the Workers preview without it for comparison, both recorded in the PR; previews always run as `preview` and have no token). It's checked again on toyinog.com at go live.

@@ -23,7 +23,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 7 | About & CV | Release 1 | done |
 | 8 | Contact form | Release 1 | done |
 | 9 | SEO & social sharing | Release 2 | in-progress |
-| 10 | Visitor analytics | Release 2 | in-progress |
+| 10 | Visitor analytics | Release 2 | done |
 | 11 | Real content & go live | Release 2 | in-progress |
 
 ## Foundations
@@ -150,7 +150,7 @@ Page titles and descriptions, social share cards, a sitemap and robots file, and
 - [x] Document it: `/document seo & social sharing`
 Spec [0008](../specs/0008-seo-social-sharing.md) · code in `src/lib/seo/`, `src/components/seo/`, page metadata exports · verify report [docs/reviews/2026-11-10-verify-seo-social-sharing.md](../reviews/2026-11-10-verify-seo-social-sharing.md)
 
-### 10. Visitor analytics · in-progress
+### 10. Visitor analytics · done
 Privacy friendly, cookie free analytics: page views, referrers, and a contact form conversion event. No cookie banner needed.
 **Done when:** page views and contact submissions show in the analytics dashboard, no cookies are set, and the script does not hurt page performance.
 - [x] Design it (spec): `/architect visitor analytics`
@@ -159,7 +159,7 @@ Privacy friendly, cookie free analytics: page views, referrers, and a contact fo
    - [x] No cookies, CSP and performance checks (AC-3, AC-4, AC-6)
 - [x] Verify it: `/check verify visitor analytics`
 - [x] Test it: `/test visitor analytics`
-- [ ] Review it: CodeRabbit on the PR
+- [x] Review it: CodeRabbit on the PR
 - [x] Document it: `/document visitor analytics`
 Spec [0009](../specs/0009-visitor-analytics.md) · code in `src/components/site/Analytics.tsx`, `tests/e2e/analytics.spec.ts`
 
