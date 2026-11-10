@@ -16,12 +16,12 @@ Scope feature 9. Toyin wants the site to be found by recruiters and clients, and
 **Acceptance criteria**:
 - **AC-1**: The root metadata sets `metadataBase` to `SITE_URL` (`https://toyinog.com`). Every public page sets `alternates.canonical` to its own path.
 - **AC-2**: Every public page has a unique `<title>` and a `description` of 50 to 160 characters. A test checks uniqueness and length across all prerendered routes.
-- **AC-3**: Every public page has Open Graph tags (`og:title`, `og:description`, `og:url`, `og:type`, `og:image` at 1200x630, `og:site_name`) and `twitter:card=summary_large_image`. Case studies use their cover as the image. All other pages use `public/og/default.png` (1200x630, Carbon Black with Toyin's name and headline, made once by the builder and committed).
+- **AC-3**: Every public page has Open Graph tags (`og:title`, `og:description`, `og:url`, `og:type`, `og:image` with its real `og:image:width` and `og:image:height`, `og:site_name`) and `twitter:card=summary_large_image`. Case studies use their cover as the image at its real size (16:10 per spec 0005; LinkedIn and others crop it to 1.91:1, so cover art keeps key content centred). All other pages use `public/og/default.png` (exactly 1200x630, Carbon Black with Toyin's name and headline, made once by the builder and committed).
 - **AC-4**: Home outputs JSON-LD for `WebSite` and `Person` (name, jobTitle from headline, url, `sameAs` LinkedIn and GitHub, image from the About photo). About outputs the same `Person`. Each case study outputs `CreativeWork` (name, description, image, dateCreated from year, author as the Person). All of it validates as schema.org JSON-LD.
 - **AC-5**: `robots.ts` returns allow all plus the sitemap URL when `getAppEnv()` is `production`, and disallow all otherwise. The root metadata also sets `robots: { index: false }` outside production.
 - **AC-6**: The sitemap includes `/`, `/work`, every published case study, `/about` and `/contact` with `lastModified` (the build date), and excludes `/contact/sent`, `/styleguide` and drafts.
 - **AC-7**: The site has a favicon (`src/app/icon.svg`, a lemon "T" on Carbon Black) and an Apple touch icon (`src/app/apple-icon.png`, 180x180).
-- **AC-8**: A Playwright test reads every sitemap URL in a production style build and checks AC-1 to AC-4 on each page.
+- **AC-8**: A Playwright test reads every sitemap URL and checks AC-1 to AC-4 on each page, with environment aware robots checks. CI runs it on the preview build; the production style run (`APP_ENV=production pnpm preview`) is recorded in the PR until CI gains a production style e2e job (task PF-T07).
 
 ## Options considered
 
