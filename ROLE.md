@@ -50,7 +50,7 @@ Read its "Heads up" list and clear every item before the task is done: context g
 - Start each task with a fresh context (`/clear`) and read from the files, not from memory of earlier tasks.
 - One task per branch and per PR. PR title `[TASK-ID] …`. Only touch the files your task lists; ask the lead before changing shared files.
 - Every acceptance criterion in the spec is the contract the PR is checked against.
-- Every PR shows proof: screenshots or a short screen recording of the feature against its acceptance criteria (desktop and mobile widths for UI).
+- Every PR that changes something visible or behavioural shows proof, made with agent-browser (`.claude/skills/agent-browser`): screenshots at desktop and phone width, and a short video for any flow (forms, navigation, animation). Publish with `scripts/pr-proof.sh`, which puts the files on the `pr-assets` branch, and paste its output under `## Proof` in the PR body, mapped to the acceptance criteria. A PR whose task is done but has no proof isn't ready to merge. Docs-only and pure config PRs need no proof.
 - Run the project's lint, typecheck, test and build commands before every push.
 - Wait for CI and CodeRabbit on your latest push, then fix their comments or reply why not. CodeRabbit puts out of diff comments in the review body, so read that too.
 - Retry limit: three attempts at a failing check or a CodeRabbit loop. Then stop and raise it with `ask_user` (lead) or to the lead (builders), with what you tried.
