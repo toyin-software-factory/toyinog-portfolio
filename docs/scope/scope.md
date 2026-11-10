@@ -19,8 +19,8 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 3 | Content model | Foundation | in-progress |
 | 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Site shell & Home | Release 1 | in-progress |
-| 6 | Work list & case studies | Release 1 | planned |
-| 7 | About & CV | Release 1 | planned |
+| 6 | Work list & case studies | Release 1 | in-progress |
+| 7 | About & CV | Release 1 | in-progress |
 | 8 | Contact form | Release 1 | planned |
 | 9 | SEO & social sharing | Release 2 | planned |
 | 10 | Visitor analytics | Release 2 | planned |
@@ -90,15 +90,33 @@ Shared header, navigation, footer and page layout, plus the Home page: who Toyin
 - [ ] Document it: `/document site shell & home`
 Spec [0004](../specs/0004-site-shell-home.md)
 
-### 6. Work list & case studies · needs a decision
+### 6. Work list & case studies · in-progress
 A list of projects and one case study page per project, generated from the content files.
 **Done when:** the Work page lists every project from the content files, each project has its own page at a stable URL, adding a Markdown file adds a project with no code change, and a missing project URL shows a helpful not found page.
-- [ ] Design it (spec): `/architect work list & case studies`
+- [x] Design it (spec): `/architect work list & case studies`
+- [ ] Build it: `/develop work list & case studies`
+   - [ ] Work grid page (AC-1, AC-2, AC-8)
+   - [ ] Static case study pages (AC-3..8)
+   - [ ] Sitemap, fixtures, axe, static check (AC-9..11)
+- [ ] Verify it: `/check verify work list & case studies`
+- [ ] Test it: `/test work list & case studies`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document work list & case studies`
+Spec [0005](../specs/0005-work-case-studies.md)
 
-### 7. About & CV · needs a decision
+### 7. About & CV · in-progress
 Bio, experience, skills and a CV download, for hiring managers who want the full picture.
 **Done when:** the About page renders bio, experience and skills from the content files, and the CV downloads as a PDF from a stable link.
-- [ ] Design it (spec): `/architect about & cv`
+- [x] Design it (spec): `/architect about & cv`
+- [ ] Build it: `/develop about & cv`
+   - [ ] Intro, bio and CV download (AC-1, AC-2, AC-5, AC-6)
+   - [ ] Experience timeline and skills (AC-3, AC-4)
+   - [ ] Sitemap, axe, static check (AC-6, AC-7)
+- [ ] Verify it: `/check verify about & cv`
+- [ ] Test it: `/test about & cv`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document about & cv`
+Spec [0006](../specs/0006-about-cv.md)
 
 ### 8. Contact form · needs a decision
 A form (name, email, hiring or project, message) that emails Toyin, with spam protection. Links to email and profiles sit beside it.
@@ -129,6 +147,7 @@ Out of scope for launch, kept so the plan stays honest.
 - **Contact auto reply**: a "thanks, I'll reply soon" email to the sender
 - **Book a call link**: a scheduling link beside the contact form
 - **Motion and visual polish**: page transitions and richer animation
+- **Tag filters on Work**: filter projects by tag once the list grows (from spec 0005)
 - **Light mode**: a light theme that follows the visitor's system setting (from spec 0003)
 
 ## Legend
