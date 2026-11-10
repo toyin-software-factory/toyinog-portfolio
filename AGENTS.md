@@ -23,6 +23,7 @@ pnpm test                        # Vitest
 pnpm build:worker                # OpenNext build (what CI and deploys run)
 pnpm test:e2e                    # Playwright, desktop + mobile, axe
 pnpm cf-typegen                  # regenerate Cloudflare env types
+pnpm content:generate            # write the shell's build time profile module (dev/build/lint/typecheck/test run it)
 ```
 
 ## Specs

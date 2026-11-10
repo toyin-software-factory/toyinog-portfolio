@@ -1,12 +1,12 @@
 import { Container, TextLink } from "@/components/ui";
 import { cx } from "@/components/ui/cx";
 import { textLinkClass } from "@/components/ui/TextLink";
-import type { Profile } from "@/lib/content";
+import type { ShellProfile } from "@/lib/content/shell-profile";
 
 import { TOP_ID } from "./Header";
 
 type FooterProps = {
-  readonly profile: Pick<Profile, "name" | "links" | "email">;
+  readonly profile: Pick<ShellProfile, "name" | "links" | "email">;
   /** The build year, so the copyright line is fixed in the prebuilt HTML. */
   readonly year: number;
 };

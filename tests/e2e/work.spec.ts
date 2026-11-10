@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { loadContent } from "../../src/lib/content/load";
+import { decodeEntities } from "../../src/lib/content/text";
 import { getAppEnv } from "../../src/lib/env";
 
 /** Project text comes from content files, so escape it before building a RegExp. */
@@ -15,14 +16,27 @@ const { projects } = loadContent({
   appEnv: getAppEnv(),
   currentYear: new Date().getFullYear(),
 });
-const [first, second] = projects;
-if (!first || !second) throw new Error("work.spec needs at least two projects in content/work");
-const last = projects.at(-1) ?? first;
+
+const NO_PROJECTS = "content/work has no published projects in this build";
+
+/** The project, or a failure in this one test. Tests skip first when it can't exist. */
+function need<T>(project: T | undefined): T {
+  if (project === undefined) throw new Error(NO_PROJECTS);
+  return project;
+}
+
+/** Plain text of each h2 in a project's rendered body: what its case study should show. */
+const bodyHeadings = (html: string): string[] =>
+  [...html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].map((match) =>
+    decodeEntities((match[1] ?? "").replace(/<[^>]+>/g, "")).trim(),
+  );
 
 test.describe("/work (spec 0005)", () => {
   test("lists every published project in order, each card linking to its case study (AC-1, AC-2)", async ({
     page,
   }) => {
+    test.skip(projects.length === 0, NO_PROJECTS);
+    const first = need(projects[0]);
     await page.goto("/work");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Work");
     await expect(page.getByText("Selected projects, newest thinking first.")).toBeVisible();
@@ -35,14 +49,16 @@ test.describe("/work (spec 0005)", () => {
     await expect(page).toHaveTitle("Work · Toyin Ogunseinde");
   });
 
-  test("uses 1 column on phones and 3 on desktop (AC-1)", async ({ page }) => {
+  test("uses 1 column on phones, 2 at md and 3 at lg (AC-1)", async ({ page }) => {
     await page.goto("/work");
-    const tops = await page
-      .getByRole("article")
-      .evaluateAll((cards) => cards.slice(0, 3).map((card) => card.getBoundingClientRect().top));
-    const columns = new Set(tops.map(Math.round)).size === 1 ? 3 : 1;
+    // Read the grid's own column count, so the check holds for any number of projects.
+    const columns = await page
+      .getByRole("main")
+      .locator("ul.grid")
+      .first()
+      .evaluate((grid) => getComputedStyle(grid).gridTemplateColumns.split(" ").length);
     const width = page.viewportSize()?.width ?? 0;
-    expect(columns).toBe(width >= 1024 ? 3 : 1);
+    expect(columns).toBe(width >= 1024 ? 3 : width >= 768 ? 2 : 1);
   });
 
   test("has no WCAG 2.2 AA violations (AC-11)", async ({ page }) => {
@@ -53,9 +69,12 @@ test.describe("/work (spec 0005)", () => {
 });
 
 test.describe("case study (spec 0005)", () => {
+  test.skip(projects.length === 0, NO_PROJECTS);
+
   test("a card opens its case study with header, cover and body (AC-2, AC-4 to AC-6)", async ({
     page,
   }) => {
+    const first = need(projects[0]);
     await page.goto("/work");
     await page.getByRole("link", { name: first.title, exact: true }).click();
     await expect(page).toHaveURL(`/work/${first.slug}`);
@@ -73,14 +92,12 @@ test.describe("case study (spec 0005)", () => {
     await expect(cover).toHaveAttribute("width", /\d+/);
     await expect(cover).toHaveAttribute("height", /\d+/);
     await expect(cover).not.toHaveAttribute("loading", "lazy");
-    await expect(page.getByRole("heading", { level: 2 })).toContainText([
-      "Problem",
-      "What I did",
-      "Outcome",
-    ]);
+    // The body's ## headings, whatever the author named them, are the page's h2s.
+    await expect(page.getByRole("heading", { level: 2 })).toHaveText(bodyHeadings(first.html));
   });
 
   test("Work is the current nav section on a case study (spec 0004 AC-2)", async ({ page }) => {
+    const first = need(projects[0]);
     await page.goto(`/work/${first.slug}`);
     const work = page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Work" });
     await expect(work).toHaveAttribute("aria-current", "page");
@@ -89,6 +106,10 @@ test.describe("case study (spec 0005)", () => {
   test("Next project goes to the following project and wraps; Back to all work returns (AC-7)", async ({
     page,
   }) => {
+    test.skip(projects.length < 2, "Next project needs two published projects");
+    const first = need(projects[0]);
+    const second = need(projects[1]);
+    const last = need(projects.at(-1));
     await page.goto(`/work/${first.slug}`);
     await page
       .getByRole("link", { name: new RegExp(`Next project\\s*${escapeRegExp(second.title)}`) })
@@ -105,6 +126,7 @@ test.describe("case study (spec 0005)", () => {
   });
 
   test("sets title, description and share image from the project (AC-8)", async ({ page }) => {
+    const first = need(projects[0]);
     await page.goto(`/work/${first.slug}`);
     await expect(page).toHaveTitle(`${first.title} · Toyin Ogunseinde`);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
@@ -124,6 +146,7 @@ test.describe("case study (spec 0005)", () => {
   });
 
   test("has no WCAG 2.2 AA violations (AC-11)", async ({ page }) => {
+    const first = need(projects[0]);
     await page.goto(`/work/${first.slug}`);
     const results = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze();
     expect(results.violations).toEqual([]);

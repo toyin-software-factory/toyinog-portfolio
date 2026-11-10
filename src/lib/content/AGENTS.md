@@ -11,10 +11,11 @@ Typed, validated site content, read at build time only. Contract: [spec 0002](..
 - `markdown.ts`: `renderMarkdown()`, the only Markdown to HTML path (no raw HTML, unsafe URLs stripped, heading ids, `rel="noopener noreferrer"` on external links).
 - `text.ts`: plain text helpers over `renderMarkdown()` output (`firstParagraphText`).
 - `check.ts`: the `pnpm content:check` script. CI runs it before the unit tests.
+- `shell-profile.ts` and `generate.ts`: `pnpm content:generate` writes the shell's profile values and the build year to `generated/shell-profile.ts` (gitignored). `dev`, `build`, `lint`, `typecheck` and `test` run it first. The root layout imports that module instead of the loader (spec 0004 AC-12). It validates all content, so it fails exactly like `content:check`.
 
 ## Rules
 
-- Import content only through `@/lib/content` from server components of statically generated routes. Never from a `"use client"` file (a test scans for it) and never at request time: Workers can't read `content/`.
+- Import content only through `@/lib/content` from server components of statically generated routes. Never from a `"use client"` file (a test scans for it) and never at request time: Workers can't read `content/`. Code that also runs at request time (the root layout, the shared shell) uses the generated module instead.
 - Every new content route must be prerendered and added to `tests/e2e/static.spec.ts`.
 - Drafts depend on `getAppEnv()` (`src/lib/env.ts`), never on `NODE_ENV` or a direct `process.env` read.
 - A new or changed field goes into `schema.ts`, the placeholder files, `content/README.md` and spec 0002 together. Error messages stay in plain words and name the file and field.

@@ -19,7 +19,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 3 | Content model | Foundation | done |
 | 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Site shell & Home | Release 1 | done |
-| 6 | Work list & case studies | Release 1 | in-progress |
+| 6 | Work list & case studies | Release 1 | done |
 | 7 | About & CV | Release 1 | in-progress |
 | 8 | Contact form | Release 1 | in-progress |
 | 9 | SEO & social sharing | Release 2 | in-progress |
@@ -90,7 +90,7 @@ Shared header, navigation, footer and page layout, plus the Home page: who Toyin
 - [x] Document it: `/document site shell & home`
 Spec [0004](../specs/0004-site-shell-home.md) · code in `src/components/site/`, `src/app/_home/`, `src/app/layout.tsx` · verify report [docs/reviews/2026-11-10-verify-site-shell-home.md](../reviews/2026-11-10-verify-site-shell-home.md)
 
-### 6. Work list & case studies · in-progress
+### 6. Work list & case studies · done
 A list of projects and one case study page per project, generated from the content files.
 **Done when:** the Work page lists every project from the content files, each project has its own page at a stable URL, adding a Markdown file adds a project with no code change, and a missing project URL shows a helpful not found page.
 - [x] Design it (spec): `/architect work list & case studies`
@@ -100,7 +100,7 @@ A list of projects and one case study page per project, generated from the conte
    - [x] Sitemap, fixtures, axe, static check (AC-9..11)
 - [x] Verify it: `/check verify work list & case studies`
 - [x] Test it: `/test work list & case studies`
-- [ ] Review it: CodeRabbit on the PR
+- [x] Review it: CodeRabbit on the PR (#26)
 - [x] Document it: `/document work list & case studies`
 Spec [0005](../specs/0005-work-case-studies.md) · code in `src/app/work/`, `src/app/sitemap.ts` · verify report [docs/reviews/2026-11-10-verify-work-case-studies.md](../reviews/2026-11-10-verify-work-case-studies.md)
 
