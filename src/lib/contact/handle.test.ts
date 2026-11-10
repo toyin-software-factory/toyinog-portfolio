@@ -169,4 +169,15 @@ describe("handleContact (spec 0007)", () => {
     expect(deps.send).not.toHaveBeenCalled();
     expect(logs).toEqual([{ event: "contact.config_missing", missing: ["CONTACT_TO_EMAIL"] }]);
   });
+
+  it("shows the email fallback, not the human check, when the Turnstile secret is missing", async () => {
+    const { deps, logs } = setup({
+      verifyTurnstile: vi.fn().mockResolvedValue({ ok: false, reason: "missing-secret" }),
+    });
+    const outcome = await handleContact(form(), deps);
+
+    expect(outcome).toMatchObject({ kind: "state", state: { status: "send_failed" } });
+    expect(deps.send).not.toHaveBeenCalled();
+    expect(logs).toEqual([{ event: "contact.config_missing", missing: ["TURNSTILE_SECRET_KEY"] }]);
+  });
 });

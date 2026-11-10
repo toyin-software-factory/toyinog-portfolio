@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { verifyTurnstile } from "./turnstile";
+import { SITEVERIFY_TIMEOUT_MS, verifyTurnstile } from "./turnstile";
 
 const reply = (body: unknown, status = 200) =>
   vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(body), { status }));
@@ -64,17 +64,29 @@ describe("verifyTurnstile (spec 0007, AC-5)", () => {
     });
   });
 
-  it("fails when no secret is configured", async () => {
+  it.each([[""], [undefined]])(
+    "fails without calling the API when no secret is configured (%s)",
+    async (secret) => {
+      const fetchSpy = reply({ success: true });
+      expect(await verifyTurnstile({ token: "tok", secret, ip: null, fetch: fetchSpy })).toEqual({
+        ok: false,
+        reason: "missing-secret",
+      });
+      expect(fetchSpy).not.toHaveBeenCalled();
+    },
+  );
+
+  it("gives up after the timeout instead of hanging", async () => {
+    const timeout = vi.spyOn(AbortSignal, "timeout");
+    const stalled = vi
+      .fn<typeof fetch>()
+      .mockRejectedValue(new DOMException("The operation timed out.", "TimeoutError"));
+
     expect(
-      await verifyTurnstile({
-        token: "tok",
-        secret: "",
-        ip: null,
-        fetch: reply({ success: true }),
-      }),
-    ).toEqual({
-      ok: false,
-      reason: "missing-secret",
-    });
+      await verifyTurnstile({ token: "tok", secret: "sec", ip: null, fetch: stalled }),
+    ).toEqual({ ok: false, reason: "timeout" });
+    expect(timeout).toHaveBeenCalledWith(SITEVERIFY_TIMEOUT_MS);
+    expect(stalled.mock.calls[0]?.[1]?.signal).toBe(timeout.mock.results[0]?.value);
+    timeout.mockRestore();
   });
 });

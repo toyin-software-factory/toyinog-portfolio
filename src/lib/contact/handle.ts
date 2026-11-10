@@ -8,7 +8,7 @@ import {
   parseContact,
   readContactValues,
 } from "./schema";
-import { TURNSTILE_RESPONSE_FIELD, type TurnstileResult } from "./turnstile";
+import { MISSING_SECRET, TURNSTILE_RESPONSE_FIELD, type TurnstileResult } from "./turnstile";
 
 /** What the form shows after a submit that didn't redirect. */
 export type ContactState =
@@ -64,6 +64,11 @@ export async function handleContact(
   // AC-5: server side Turnstile check with the client IP.
   const token = formData.get(TURNSTILE_RESPONSE_FIELD);
   const human = await deps.verifyTurnstile(typeof token === "string" ? token : "", deps.clientIp);
+  if (!human.ok && human.reason === MISSING_SECRET) {
+    // A server misconfiguration, not the visitor's fault: show the email fallback.
+    deps.log({ event: "contact.config_missing", missing: ["TURNSTILE_SECRET_KEY"] });
+    return state({ status: "send_failed", values });
+  }
   if (!human.ok) {
     deps.log({ event: "contact.turnstile_failed", reason: human.reason });
     return state({ status: "turnstile", values });
