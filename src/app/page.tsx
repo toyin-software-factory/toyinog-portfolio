@@ -13,8 +13,8 @@ export default function HomePage() {
   const profile = getProfile();
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-3xl items-center px-6">
-      <h1 className="text-4xl font-semibold tracking-tight">{profile.name}</h1>
-    </main>
+    <div className="mx-auto flex min-h-dvh max-w-3xl items-center px-6">
+      <h1 className="font-display text-h1">{profile.name}</h1>
+    </div>
   );
 }
