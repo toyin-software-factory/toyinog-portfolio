@@ -52,21 +52,20 @@ describe("content getters on the real content", () => {
     );
   });
 
-  it("shows the draft in previews (AC-4)", async () => {
+  it("hides drafts from every getter in production (AC-4)", async () => {
     const preview = await loadModule("preview");
     const draft = preview.getProjects().find((project) => project.draft);
     expect(draft).toBeDefined();
     if (!draft) return;
     expect(preview.getProject(draft.slug)?.draft).toBe(true);
     expect(preview.getProjectSlugs()).toContain(draft.slug);
-    expect(preview.getProject("no-such-project")).toBeNull();
-  });
 
-  // Drafts hidden in production are covered on fixtures in load.test.ts and addProject.test.tsx.
-  // Today's real content is placeholder, so a production load stops on it (spec 0010 AC-1).
-  it("refuses today's placeholder content in production (spec 0010 AC-1)", async () => {
+    // Before launch, production builds only warn about today's placeholder content (spec 0010 AC-1).
     const production = await loadModule("production");
-    expect(() => production.getProjects()).toThrow(/contains "placeholder"/);
+    expect(production.getProjects().some((project) => project.draft)).toBe(false);
+    expect(production.getProjectSlugs()).not.toContain(draft.slug);
+    expect(production.getProject(draft.slug)).toBeNull();
+    expect(production.getProject("no-such-project")).toBeNull();
   });
 
   it("gives each getter call its own array", async () => {

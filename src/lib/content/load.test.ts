@@ -2,7 +2,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:f
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ContentError } from "./errors";
 import { type ContentSnapshot, type LoadOptions, loadContent } from "./load";
@@ -316,27 +316,66 @@ describe("loadContent: warnings", () => {
 describe("loadContent: launch guards (spec 0010 AC-1, AC-1b)", () => {
   const withPlaceholderAlt = (source: string) =>
     source.replace(/alt: "[^"]*"/, 'alt: "Placeholder cover"');
-
-  it("fails in production on a marker in a front matter field, listing file and field", () => {
-    const alpha = readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8");
-    const root = fixtureRoot({ "content/work/alpha.md": withPlaceholderAlt(alpha) });
-
-    const error = problemsFor(root, { appEnv: "production" });
-    expect(error.problems).toContainEqual({
-      file: "content/work/alpha.md",
-      field: "cover.alt",
-      message: 'contains "placeholder". Replace it with real content before it goes live',
+  const placeholderRoot = () =>
+    fixtureRoot({
+      "content/work/alpha.md": withPlaceholderAlt(
+        readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8"),
+      ),
     });
+  const placeholderHit = {
+    file: "content/work/alpha.md",
+    field: "cover.alt",
+    message: 'contains "placeholder". Replace it with real content before it goes live',
+  };
+
+  afterEach(() => {
+    vi.doUnmock("@/lib/seo/site");
+    vi.resetModules();
   });
 
-  it("fails in production on a marker in a file name under public/images or public/cv", () => {
-    const root = fixtureRoot({
-      "public/images/work/placeholder-extra.png": "x",
-      "public/cv/example.com.pdf": "x",
-    });
+  it("fails an indexable build (production and launched) on a marker, listing file and field", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/seo/site", async (original) => ({
+      ...(await original<object>()),
+      SITE_LAUNCHED: true,
+    }));
+    const { loadContent: launchedLoad } = await import("./load");
+    // A fresh module graph, so match on the message rather than the ContentError class.
+    let thrown: unknown;
+    try {
+      launchedLoad({ rootDir: placeholderRoot(), appEnv: "production", currentYear: 2026 });
+    } catch (error) {
+      thrown = error;
+    }
+    expect(String(thrown)).toContain('contains "placeholder"');
+    expect((thrown as { problems?: unknown[] } | undefined)?.problems).toContainEqual(
+      placeholderHit,
+    );
+  });
 
-    const files = problemsFor(root, { appEnv: "production" }).problems.map(({ file }) => file);
-    expect(files).toEqual(
+  it("only warns in production before launch, listing the same hits", () => {
+    const { warnings, projects } = load(placeholderRoot(), { appEnv: "production" });
+    expect(projects.length).toBeGreaterThan(0);
+    expect(warnings.join("\n")).toContain(
+      'content/work/alpha.md · cover.alt: contains "placeholder"',
+    );
+  });
+
+  it("only warns in previews", () => {
+    const { warnings } = load(placeholderRoot(), { appEnv: "preview" });
+    expect(warnings.join("\n")).toContain(
+      'content/work/alpha.md · cover.alt: contains "placeholder"',
+    );
+  });
+
+  it("fails in strict mode (content:check in production) on a field or a file name", () => {
+    const root = placeholderRoot();
+    writeFileSync(path.join(root, "public/images/work/placeholder-extra.png"), "x");
+    writeFileSync(path.join(root, "public/cv/example.com.pdf"), "x");
+
+    const { problems } = problemsFor(root, { appEnv: "production", placeholders: "error" });
+    expect(problems).toContainEqual(placeholderHit);
+    expect(problems.map(({ file }) => file)).toEqual(
       expect.arrayContaining([
         "public/images/work/placeholder-extra.png",
         "public/cv/example.com.pdf",
@@ -344,25 +383,10 @@ describe("loadContent: launch guards (spec 0010 AC-1, AC-1b)", () => {
     );
   });
 
-  it("only warns in previews, listing the same hits", () => {
-    const alpha = readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8");
-    const root = fixtureRoot({ "content/work/alpha.md": withPlaceholderAlt(alpha) });
-
-    const { warnings, projects } = load(root, { appEnv: "preview" });
-    expect(projects.length).toBeGreaterThan(0);
-    expect(warnings.join("\n")).toContain(
-      'content/work/alpha.md · cover.alt: contains "placeholder"',
-    );
-  });
-
-  it("can be asked to only warn in production", () => {
-    const alpha = readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8");
-    const root = fixtureRoot({ "content/work/alpha.md": withPlaceholderAlt(alpha) });
-    expect(() => load(root, { appEnv: "production", placeholders: "warn" })).not.toThrow();
-  });
-
-  it("passes clean fixture content in production", () => {
-    expect(() => load(fixtureRoot(), { appEnv: "production" })).not.toThrow();
+  it("passes clean fixture content in strict mode", () => {
+    expect(() =>
+      load(fixtureRoot(), { appEnv: "production", placeholders: "error" }),
+    ).not.toThrow();
   });
 
   it.each(["preview", "production"] as const)(

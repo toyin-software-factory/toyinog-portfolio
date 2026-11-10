@@ -5,6 +5,7 @@ import matter from "gray-matter";
 import type { z } from "zod";
 
 import type { AppEnv } from "@/lib/env";
+import { isIndexable } from "@/lib/seo/indexing";
 
 import { ContentError, type ContentProblem } from "./errors";
 import {
@@ -36,7 +37,10 @@ export interface LoadOptions {
   currentYear: number;
   /**
    * Placeholder text and files (spec 0010 AC-1): `error` fails, `warn` lists them as
-   * warnings. Defaults to `error` in production and `warn` everywhere else.
+   * warnings. Defaults to the build path rule: `error` only when the build is
+   * indexable (production and `SITE_LAUNCHED`), so the go live build can't attach
+   * the domain to placeholder content. `content:check` passes `error` for any
+   * production check.
    */
   placeholders?: PlaceholderMode;
 }
@@ -94,7 +98,7 @@ function listFiles(dir: string, rootDir: string): string[] {
  */
 export function loadContent(options: LoadOptions): ContentSnapshot {
   const { rootDir, appEnv, currentYear } = options;
-  const placeholderMode = options.placeholders ?? (appEnv === "production" ? "error" : "warn");
+  const placeholderMode = options.placeholders ?? (isIndexable(appEnv) ? "error" : "warn");
   const publicDir = path.join(rootDir, "public");
   const problems: ContentProblem[] = [];
   const warnings: string[] = [];
@@ -253,7 +257,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
     }
   }
 
-  // Launch guards (spec 0010). Sizes always fail; placeholders fail in production only.
+  // Launch guards (spec 0010). Sizes always fail; placeholders follow placeholderMode.
   const bytes = (sitePath: string) => statSync(path.join(publicDir, `.${sitePath}`)).size;
   for (const project of projects) {
     const file = filesBySlug.get(project.slug) ?? "content/work";
@@ -276,7 +280,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
     problems.push(...placeholders);
   } else if (placeholders.length > 0) {
     warnings.push(
-      `${String(placeholders.length)} placeholder ${placeholders.length === 1 ? "hit" : "hits"} (a production build fails on these, spec 0010 AC-1):`,
+      `${String(placeholders.length)} placeholder ${placeholders.length === 1 ? "hit" : "hits"} (they fail \`APP_ENV=production pnpm content:check\` and the launched production build, spec 0010 AC-1):`,
       ...placeholders.map(
         ({ file, field, message }) => `  ${file}${field ? ` · ${field}` : ""}: ${message}`,
       ),

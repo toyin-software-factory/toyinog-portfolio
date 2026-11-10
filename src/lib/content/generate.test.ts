@@ -106,20 +106,24 @@ describe("content:generate script", { timeout: 30_000 }, () => {
     expect(existsSync(path.join(root, SHELL_PROFILE_MODULE_PATH))).toBe(false);
   });
 
-  // content:generate is the first step of `pnpm build`, so this is a production build failing.
-  it("stops a production build on placeholder content, and lets a preview build through (spec 0010 AC-1)", () => {
+  // content:generate is the first step of `pnpm build`. Before launch a production build
+  // only warns about placeholder content, so main keeps deploying; it turns strict once
+  // SITE_LAUNCHED is true (tested on the loader in load.test.ts). Sizes fail it any time.
+  it("lets a production build through placeholder content before launch (spec 0010 AC-1)", () => {
     const alpha = readFileSync(path.join(FIXTURES, "valid/content/work/alpha.md"), "utf8");
-    const changes = {
+    const root = fixtureRoot({
       "content/work/alpha.md": alpha.replace(/title: "[^"]*"/, 'title: "Placeholder title"'),
-    };
+    });
+    expect(runGenerate(root, "production").code).toBe(0);
+    expect(existsSync(path.join(root, SHELL_PROFILE_MODULE_PATH))).toBe(true);
+  });
 
-    const production = runGenerate(fixtureRoot(changes), "production");
-    expect(production.code).toBe(1);
-    expect(production.err).toContain('content/work/alpha.md\n  - title: contains "placeholder"');
-
-    const previewRoot = fixtureRoot(changes);
-    const preview = runGenerate(previewRoot, "preview");
-    expect(preview.code).toBe(0);
-    expect(existsSync(path.join(previewRoot, SHELL_PROFILE_MODULE_PATH))).toBe(true);
+  it("stops a build on an oversized cover in any environment (spec 0010 AC-1b)", () => {
+    const big = `<svg xmlns="http://www.w3.org/2000/svg">${"x".repeat(300 * 1024)}</svg>`;
+    for (const appEnv of ["preview", "production"] as const) {
+      const result = runGenerate(fixtureRoot({ "public/images/work/alpha.svg": big }), appEnv);
+      expect(result.code).toBe(1);
+      expect(result.err).toContain("The limit is 300 KB");
+    }
   });
 });

@@ -9,7 +9,7 @@ import { SkipLink } from "@/components/ui";
 import { BUILD_YEAR, SHELL_PROFILE } from "@/lib/content/generated/shell-profile";
 import { getAppEnv } from "@/lib/env";
 import { isIndexable } from "@/lib/seo/indexing";
-import { DEFAULT_SHARE_IMAGE } from "@/lib/seo/site";
+import { DEFAULT_SHARE_IMAGE } from "@/lib/seo/brand";
 import { SITE_URL } from "@/lib/site";
 
 import "./globals.css";

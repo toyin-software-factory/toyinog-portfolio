@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import { truncateAtWord } from "@/lib/content/text";
 
-import { DEFAULT_SHARE_IMAGE, DESCRIPTION_MAX, SITE_NAME } from "./site";
+import { DEFAULT_SHARE_IMAGE, SITE_NAME } from "./brand";
+import { DESCRIPTION_MAX } from "./site";
 
 export type ShareImage = {
   readonly url: string;

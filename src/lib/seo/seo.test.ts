@@ -6,13 +6,8 @@ import sitemap from "@/app/sitemap";
 import { creativeWorkJsonLd, personJsonLd, serializeJsonLd, websiteJsonLd } from "./jsonLd";
 import { isIndexable, NOINDEX_HEADER } from "./indexing";
 import { pageMetadata } from "./metadata";
-import {
-  absoluteUrl,
-  DEFAULT_SHARE_IMAGE,
-  DESCRIPTION_MAX,
-  SITE_LAUNCHED,
-  SITE_NAME,
-} from "./site";
+import { DEFAULT_SHARE_IMAGE, SITE_NAME } from "./brand";
+import { absoluteUrl, DESCRIPTION_MAX, SITE_LAUNCHED } from "./site";
 
 const person = {
   name: "Ada Lovelace",
