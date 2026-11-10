@@ -49,14 +49,16 @@ test.describe("/work (spec 0005)", () => {
     await expect(page).toHaveTitle("Work · Toyin Ogunseinde");
   });
 
-  test("uses 1 column on phones and 3 on desktop (AC-1)", async ({ page }) => {
+  test("uses 1 column on phones, 2 at md and 3 at lg (AC-1)", async ({ page }) => {
     await page.goto("/work");
-    const tops = await page
-      .getByRole("article")
-      .evaluateAll((cards) => cards.slice(0, 3).map((card) => card.getBoundingClientRect().top));
-    const columns = new Set(tops.map(Math.round)).size === 1 ? 3 : 1;
+    // Read the grid's own column count, so the check holds for any number of projects.
+    const columns = await page
+      .getByRole("main")
+      .locator("ul.grid")
+      .first()
+      .evaluate((grid) => getComputedStyle(grid).gridTemplateColumns.split(" ").length);
     const width = page.viewportSize()?.width ?? 0;
-    expect(columns).toBe(width >= 1024 ? 3 : 1);
+    expect(columns).toBe(width >= 1024 ? 3 : width >= 768 ? 2 : 1);
   });
 
   test("has no WCAG 2.2 AA violations (AC-11)", async ({ page }) => {
