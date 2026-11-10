@@ -7,6 +7,8 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { SkipLink } from "@/components/ui";
 import { BUILD_YEAR, SHELL_PROFILE } from "@/lib/content/generated/shell-profile";
+import { getAppEnv } from "@/lib/env";
+import { DEFAULT_SHARE_IMAGE } from "@/lib/seo/site";
 import { SITE_URL } from "@/lib/site";
 
 import "./globals.css";
@@ -37,6 +39,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { template: `%s · ${name}`, default: `${name} · ${headline}` },
   description: intro,
+  // Defaults for pages without their own (the 404 page, for example). Public pages
+  // set their full set through pageMetadata() in src/lib/seo (spec 0008).
+  openGraph: {
+    siteName: name,
+    type: "website",
+    locale: "en",
+    images: [{ ...DEFAULT_SHARE_IMAGE }],
+  },
+  twitter: { card: "summary_large_image", images: [{ ...DEFAULT_SHARE_IMAGE }] },
+  // Previews live on public workers.dev URLs: keep them out of search (spec 0008 AC-5).
+  ...(getAppEnv() === "production" ? {} : { robots: { index: false } }),
 };
 
 /** The site shell (spec 0004): skip link, header, main and footer around every page. */
