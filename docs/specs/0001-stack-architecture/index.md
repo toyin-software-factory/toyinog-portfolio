@@ -79,17 +79,17 @@ wrangler.jsonc, open-next.config.ts, next.config.ts, .nvmrc
 
 ## Cloudflare configuration
 
-`wrangler.jsonc` (committed, with no personal data in it): worker `name` `toyinog-portfolio`, `main` `.open-next/worker.js`, a recent `compatibility_date`, `compatibility_flags: ["nodejs_compat"]`, `assets` (directory `.open-next/assets`, binding `ASSETS`), `observability.enabled: true`, `send_email` binding `SEND_EMAIL` with no `destination_address` (the address comes from a secret), `ratelimits` binding `CONTACT_RATE_LIMITER` (its own `namespace_id`, `limit: 5`, `period: 60`), `vars` holding `APP_ENV` and `CONTACT_FROM_EMAIL`. The custom domain route for toyinog.com is added at go live.
+`wrangler.jsonc` (committed, with no personal data in it): worker `name` `toyinog-portfolio`, `main` `.open-next/worker.js`, a recent `compatibility_date`, `compatibility_flags: ["nodejs_compat"]`, `assets` (directory `.open-next/assets`, binding `ASSETS`), `observability.enabled: true`, `send_email` binding `SEND_EMAIL` with no `destination_address` (the address comes from a secret), `ratelimits` binding `CONTACT_RATE_LIMITER` (its own `namespace_id`, `limit: 5`, `period: 60`), `vars` holding `CONTACT_FROM_EMAIL`. The custom domain route for toyinog.com is added at go live.
 
 Workers Builds settings (the Toyin action):
 - Production branch `main`. Build command `pnpm opennextjs-cloudflare build`, deploy command `pnpm opennextjs-cloudflare deploy`.
 - Non production branches enabled. Deploy command `pnpm opennextjs-cloudflare upload`, which creates a preview version with its own URL.
 - The workers.dev subdomain and preview URLs are enabled.
-- Build variables: `NODE_VERSION`, plus the two `NEXT_PUBLIC_*` values below.
+- Build variables: `NODE_VERSION`, plus the two `NEXT_PUBLIC_*` values below. No `APP_ENV` build variable (it is derived from the branch).
 
 **Server code reads bindings and secrets** through `getCloudflareContext().env` from `@opennextjs/cloudflare`, typed by `cf-typegen`. Client IP for rate limiting comes from the `CF-Connecting-IP` header, never `x-forwarded-for`. The rate limiter is best effort (counted per Cloudflare location). Turnstile and the honeypot are the real abuse defence.
 
-**Production vs preview (`APP_ENV`).** Previews run the same Worker with the same bindings as production, so `APP_ENV` (`production` set in `vars`, and overridden to `preview` for non production builds through a build variable) drives three rules:
+**Production vs preview (`APP_ENV`).** Previews run the same Worker with the same runtime vars and bindings as production, and Workers Builds uses one build command for every branch. So `APP_ENV` is a build time value, baked into each branch's build: `next.config.ts` resolves it (explicit `APP_ENV` if set, else `production` when `WORKERS_CI_BRANCH` is `main`, a variable Workers Builds sets, else `preview`) and exposes it through the Next.js `env` config. Code reads it only through `getAppEnv()` in `src/lib/env.ts` (zod validated). It is never a `wrangler.jsonc` var. It drives these rules:
 - Outside production, the contact action does not send real email. It logs a dry run and returns success, so preview testing never emails Toyin.
 - Outside production, Turnstile uses Cloudflare's published test keys (always pass), so previews on `*.workers.dev` work without adding preview hostnames to the widget.
 - The analytics beacon renders only in production.
@@ -102,7 +102,7 @@ Names only, never values in the repo. Plain dashboard variables are wiped by eac
 |---|---|---|
 | `CONTACT_TO_EMAIL` | Worker secret (Toyin's verified inbox; secret so the address isn't committed) | Cloudflare secret. Local: `.dev.vars` |
 | `CONTACT_FROM_EMAIL` | Plain var, e.g. `contact@toyinog.com` | `wrangler.jsonc` `vars` |
-| `APP_ENV` | Plain var: `production` or `preview` | `wrangler.jsonc` `vars`, overridden for previews. Local and CI: `preview` |
+| `APP_ENV` | Build time value: `production` or `preview` | Resolved in `next.config.ts` from `APP_ENV` or `WORKERS_CI_BRANCH` (see above). Not set in Workers Builds. Local and CI: unset, so `preview` |
 | `TURNSTILE_SECRET_KEY` | Worker secret | Cloudflare secret. Local and CI: the Turnstile test secret |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Public, inlined at build | Workers Builds build variable. Local and CI: the Turnstile test site key |
 | `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` | Public, inlined at build | Workers Builds build variable. Unset locally and in CI (no beacon) |
