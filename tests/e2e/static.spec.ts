@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+import { loadContent } from "../../src/lib/content/load";
+import { getAppEnv } from "../../src/lib/env";
+
 /**
  * Every content route must be prerendered HTML (spec 0001, spec 0002 AC-10).
  * The Worker can't read content/ at runtime, so a route that turned dynamic
@@ -7,12 +10,19 @@ import { expect, test } from "@playwright/test";
  * prerendered cache with `x-opennext-cache: HIT`, and Next.js marks a
  * prerendered page with `x-nextjs-prerender: 1`.
  *
- * Later page tasks: add your content routes here. When the case study route
- * exists, add `/work/<slug>` for every published project, derived from the
- * content (for example `loadContent()` from src/lib/content/load.ts with
- * appEnv "preview"), so new projects are covered automatically.
+ * Case studies come from the content, resolved the same way as the build
+ * (`getAppEnv()`), so a new project is covered without touching this file.
+ * Later page tasks: add your fixed routes to FIXED_ROUTES.
  */
-const CONTENT_ROUTES = ["/"];
+const FIXED_ROUTES = ["/", "/work"];
+
+const { projects } = loadContent({
+  rootDir: process.cwd(),
+  appEnv: getAppEnv(),
+  currentYear: new Date().getFullYear(),
+});
+
+const CONTENT_ROUTES = [...FIXED_ROUTES, ...projects.map(({ slug }) => `/work/${slug}`)];
 
 for (const route of CONTENT_ROUTES) {
   test(`${route} is served as prerendered HTML`, async ({ request }) => {
