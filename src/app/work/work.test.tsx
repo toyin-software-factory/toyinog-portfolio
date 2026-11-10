@@ -73,8 +73,9 @@ describe("case study route (spec 0005)", () => {
     expect(cover).toHaveAttribute("width");
     expect(cover).toHaveAttribute("height");
     expect(cover).not.toHaveAttribute("loading", "lazy");
-    expect(screen.getByRole("heading", { level: 2, name: "Problem" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 2, name: "Outcome" })).toBeInTheDocument();
+    // The body's ## headings, whatever they're called, render as the page's h2s.
+    const expected = [...first.html.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/g)].length;
+    expect(screen.queryAllByRole("heading", { level: 2 })).toHaveLength(expected);
     expect(
       screen.getByRole("link", { name: new RegExp(escapeRegExp(second.title)) }),
     ).toHaveAttribute("href", `/work/${second.slug}`);
