@@ -51,7 +51,7 @@ The shape of the Markdown content files: projects and case studies, the bio, exp
    - [x] Markdown rendering pipeline (AC-7)
    - [x] Placeholder content, assets and content README (AC-8)
    - [x] Fixture tests and `content:check` in CI (AC-3..7)
-- [ ] Verify it: `/check verify content model`
+- [x] Verify it: `/check verify content model`
 - [ ] Test it: `/test content model`
 - [ ] Review it: CodeRabbit on the PR
 - [ ] Document it: `/document content model`
