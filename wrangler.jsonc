@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "toyinog-portfolio",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  // Email Routing. No destination_address here: the inbox comes from the
+  // CONTACT_TO_EMAIL secret, so the address is never committed.
+  "send_email": [{ "name": "SEND_EMAIL" }],
+  // Best effort flood control for the contact form (counted per Cloudflare location).
+  "ratelimits": [
+    {
+      "name": "CONTACT_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 5, "period": 60 },
+    },
+  ],
+  // Plain vars only. Secrets (CONTACT_TO_EMAIL, TURNSTILE_SECRET_KEY) are set in
+  // Cloudflare and, locally, in .dev.vars. APP_ENV is overridden to "preview"
+  // for non production builds.
+  "vars": {
+    "APP_ENV": "production",
+    "CONTACT_FROM_EMAIL": "contact@toyinog.com",
+  },
+}

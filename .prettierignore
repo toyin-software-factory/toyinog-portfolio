@@ -1,0 +1,17 @@
+# Generated
+.next/
+.open-next/
+.wrangler/
+node_modules/
+playwright-report/
+test-results/
+pnpm-lock.yaml
+next-env.d.ts
+cloudflare-env.d.ts
+
+# Prose and agent tooling, owned by other skills and kept as written
+*.md
+.claude/
+docs/
+skills-lock.json
+.coderabbit.yaml
