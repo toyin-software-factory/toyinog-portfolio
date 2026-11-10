@@ -1,0 +1,9 @@
+# Copy to .dev.vars for `pnpm preview` and `next dev` bindings. .dev.vars is git ignored.
+# Pick the .env file OpenNext loads (development | production).
+NEXTJS_ENV=development
+# Local and CI run as a preview: no real email, Turnstile test keys.
+APP_ENV=preview
+# Toyin's verified inbox. A Worker secret in Cloudflare; leave empty locally.
+CONTACT_TO_EMAIL=
+# Cloudflare's published Turnstile test secret (always passes). The real one is a Worker secret.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA

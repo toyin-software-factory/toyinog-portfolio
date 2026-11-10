@@ -1,0 +1,85 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Local and CI run as a preview: no real email, Cloudflare's published Turnstile test keys.
+      APP_ENV: preview
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Free plan limit for the compressed Worker.
+      WORKER_SIZE_LIMIT_KIB: "3072"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6 # version comes from package.json packageManager
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Local Worker vars (test values only)
+        run: cp .dev.vars.example .dev.vars
+
+      - name: OpenNext build
+        run: pnpm build:worker
+
+      - name: Worker size gate
+        run: |
+          out="$(pnpm exec wrangler deploy --dry-run --outdir "$RUNNER_TEMP/worker-dry-run" 2>&1)"
+          echo "$out"
+          line="$(printf '%s\n' "$out" | grep -E 'Total Upload:.*gzip:' | tail -1)"
+          [ -n "$line" ] || { echo "::error::Could not read the Worker size from wrangler"; exit 1; }
+          value="$(printf '%s' "$line" | sed -E 's/.*gzip: ([0-9.]+) ([KM]iB).*/\1/')"
+          unit="$(printf '%s' "$line" | sed -E 's/.*gzip: ([0-9.]+) ([KM]iB).*/\2/')"
+          kib="$(awk -v v="$value" -v u="$unit" 'BEGIN { printf "%.2f", (u == "MiB" ? v * 1024 : v) }')"
+          echo "### Worker size: ${kib} KiB compressed (limit ${WORKER_SIZE_LIMIT_KIB} KiB)" >> "$GITHUB_STEP_SUMMARY"
+          if awk -v k="$kib" -v l="$WORKER_SIZE_LIMIT_KIB" 'BEGIN { exit !(k > l) }'; then
+            echo "::error::Compressed Worker is ${kib} KiB, over the ${WORKER_SIZE_LIMIT_KIB} KiB Workers Free plan limit"
+            exit 1
+          fi
+          echo "Compressed Worker: ${kib} KiB (limit ${WORKER_SIZE_LIMIT_KIB} KiB)"
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End to end tests (pnpm preview, Workers runtime)
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

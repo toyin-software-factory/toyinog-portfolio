@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      # The adapter and the framework always move together.
+      next-and-opennext:
+        patterns:
+          - next
+          - eslint-config-next
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+          - "@opennextjs/cloudflare"
+          - wrangler
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
