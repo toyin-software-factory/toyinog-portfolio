@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TURNSTILE_TEST_SECRET_KEY, verifyTurnstile } from "@/lib/contact/turnstile";
 import { getAppEnv } from "@/lib/env";
 
-import { clearSentCookie, sendContact } from "./actions";
+import { sendContact } from "./actions";
 import { sendThroughBinding } from "./sendThroughBinding";
 import { SENT_COOKIE } from "./sentCookie";
 
@@ -126,13 +126,5 @@ describe("the sent cookie (AC-10)", () => {
       name: "contact_sent",
       options: { httpOnly: true, secure: true, sameSite: "lax", maxAge: 60, path: "/contact" },
     });
-  });
-
-  it("is cleared by name and path", async () => {
-    vi.mocked(cookies).mockResolvedValue(
-      cookieStore as unknown as Awaited<ReturnType<typeof cookies>>,
-    );
-    await clearSentCookie();
-    expect(cookieStore.delete).toHaveBeenCalledWith({ name: "contact_sent", path: "/contact" });
   });
 });

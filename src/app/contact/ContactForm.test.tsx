@@ -104,7 +104,12 @@ describe("ContactForm (spec 0007)", () => {
   });
 
   it("shows a pending state while sending (AC-11)", async () => {
-    vi.mocked(sendContact).mockReturnValue(new Promise<ContactState>(() => undefined));
+    let finish: (state: ContactState) => void = () => undefined;
+    vi.mocked(sendContact).mockReturnValue(
+      new Promise<ContactState>((resolve) => {
+        finish = resolve;
+      }),
+    );
     renderForm();
     await submit();
 
@@ -112,6 +117,11 @@ describe("ContactForm (spec 0007)", () => {
       expect(screen.getByRole("button", { name: /Sending…/ })).toBeDisabled();
     });
     expect(screen.getByRole("button", { name: /Sending…/ })).toHaveAttribute("aria-busy", "true");
+    // Settle the action so it doesn't hold up the next test's transition.
+    await act(async () => {
+      finish({ status: "idle" });
+      await Promise.resolve();
+    });
   });
 
   it("hides the honeypot from people and assistive tech (AC-2)", () => {

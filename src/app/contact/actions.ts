@@ -45,10 +45,7 @@ export async function sendContact(
   if (outcome.setSentCookie) {
     (await cookies()).set(SENT_COOKIE.name, "1", SENT_COOKIE.options);
   }
+  // Next renders /contact/sent inside this response, so src/middleware.ts sees only
+  // later requests to it: it clears the cookie on the next visit (or it expires in 60 s).
   redirect("/contact/sent");
-}
-
-/** Clears the one time cookie once /contact/sent has rendered (AC-10). */
-export async function clearSentCookie(): Promise<void> {
-  (await cookies()).delete({ name: SENT_COOKIE.name, path: SENT_COOKIE.options.path });
 }

@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 import { ButtonLink, Container, Heading } from "@/components/ui";
 
-import { SENT_COOKIE } from "../sentCookie";
-import { ClearSentCookie } from "./ClearSentCookie";
-
-// Reads the cookie on every request, so it can't be prerendered.
-export const dynamic = "force-dynamic";
+// Static: src/middleware.ts lets visitors in only right after a send, then clears the cookie.
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Message sent",
@@ -16,13 +11,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * The thank you page and the analytics conversion (spec 0007, AC-10). It renders only
- * right after a send, when the short lived cookie is present; otherwise it sends the
- * visitor to /contact, so direct visits don't count.
+ * The thank you page and the analytics conversion (spec 0007, AC-10). The cookie gate
+ * lives in `src/middleware.ts`, so direct visits are sent to /contact and don't count.
  */
-export default async function ContactSentPage() {
-  if (!(await cookies()).has(SENT_COOKIE.name)) redirect("/contact");
-
+export default function ContactSentPage() {
   return (
     <Container className="pt-16 pb-24 md:pt-24">
       <div className="flex max-w-prose flex-col gap-6">
@@ -40,7 +32,6 @@ export default async function ContactSentPage() {
           </ButtonLink>
         </div>
       </div>
-      <ClearSentCookie />
     </Container>
   );
 }

@@ -94,10 +94,15 @@ test.describe("/contact (spec 0007)", () => {
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
     await expectNoAxeViolations(page);
 
-    // The cookie is one time: once cleared, a reload goes back to the form.
-    await expect
-      .poll(async () => (await page.context().cookies()).some((c) => c.name === "contact_sent"))
-      .toBe(false);
+    // The page arrives inside the action's response, so the cookie gate (src/middleware.ts)
+    // sees the next request: it shows the page once more and clears the cookie, then a
+    // further visit goes back to the form.
+    const hasCookie = async () =>
+      (await page.context().cookies()).some((c) => c.name === "contact_sent");
+    expect(await hasCookie()).toBe(true);
+    await page.reload();
+    await expect(page).toHaveURL(/\/contact\/sent$/);
+    expect(await hasCookie()).toBe(false);
     await page.reload();
     await expect(page).toHaveURL(/\/contact$/);
   });
