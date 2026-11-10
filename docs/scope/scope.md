@@ -22,8 +22,8 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 6 | Work list & case studies | Release 1 | in-progress |
 | 7 | About & CV | Release 1 | in-progress |
 | 8 | Contact form | Release 1 | in-progress |
-| 9 | SEO & social sharing | Release 2 | planned |
-| 10 | Visitor analytics | Release 2 | planned |
+| 9 | SEO & social sharing | Release 2 | in-progress |
+| 10 | Visitor analytics | Release 2 | in-progress |
 | 11 | Real content & go live | Release 2 | planned |
 
 ## Foundations
@@ -136,15 +136,32 @@ Spec [0007](../specs/0007-contact-form.md)
 
 ## Release 2: launch ready
 
-### 9. SEO & social sharing · needs a decision
+### 9. SEO & social sharing · in-progress
 Page titles and descriptions, social share cards, a sitemap and robots file, and structured data about Toyin, so the site is found and shares well.
 **Done when:** every public page has a unique title, description and share image, the sitemap lists every page including case studies, and share previews render correctly.
-- [ ] Design it (spec): `/architect seo & social sharing`
+- [x] Design it (spec): `/architect seo & social sharing`
+- [ ] Build it: `/develop seo & social sharing`
+   - [ ] Canonical, titles, Open Graph and default share image (AC-1..3)
+   - [ ] JSON-LD Person, WebSite, CreativeWork (AC-4)
+   - [ ] robots by environment, sitemap, icons, sitemap wide check (AC-5..8)
+- [ ] Verify it: `/check verify seo & social sharing`
+- [ ] Test it: `/test seo & social sharing`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document seo & social sharing`
+Spec [0008](../specs/0008-seo-social-sharing.md)
 
-### 10. Visitor analytics · needs a decision
+### 10. Visitor analytics · in-progress
 Privacy friendly, cookie free analytics: page views, referrers, and a contact form conversion event. No cookie banner needed.
 **Done when:** page views and contact submissions show in the analytics dashboard, no cookies are set, and the script does not hurt page performance.
-- [ ] Design it (spec): `/architect visitor analytics`
+- [x] Design it (spec): `/architect visitor analytics`
+- [ ] Build it: `/develop visitor analytics`
+   - [ ] Production only beacon in the layout (AC-1, AC-2, AC-5)
+   - [ ] No cookies, CSP and performance checks (AC-3, AC-4, AC-6)
+- [ ] Verify it: `/check verify visitor analytics`
+- [ ] Test it: `/test visitor analytics`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document visitor analytics`
+Spec [0009](../specs/0009-visitor-analytics.md)
 
 ### 11. Real content & go live · needs a decision
 Toyin replaces the placeholder content with the real bio, case studies and CV, then toyinog.com points at the new site and the old toyinog-website is retired.
