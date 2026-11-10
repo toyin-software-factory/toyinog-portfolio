@@ -42,13 +42,13 @@ for f in "$@"; do
   name="$(basename "$f" | tr -c 'A-Za-z0-9._\n-' '-')"
   # A name already taken in this run (desktop/shot.png and phone/shot.png, or a video's GIF preview)
   # gets a numbered prefix instead of overwriting.
-  [ -n "${used[$name]:-}" ] && name="$n-$name"
+  while [ -n "${used[$name]:-}" ]; do name="$n-$name"; done
   used[$name]=1
   cp "$f" "$tree/$id/$name"
   case "${name,,}" in
     *.webm|*.mp4|*.mov)
       gif="${name%.*}.gif"
-      [ -n "${used[$gif]:-}" ] && gif="$n-$gif"
+      while [ -n "${used[$gif]:-}" ]; do gif="$n-$gif"; done
       used[$gif]=1
       ffmpeg -loglevel error -y -i "$f" -vf "fps=8,scale=800:-1:flags=lanczos" -loop 0 "$tree/$id/$gif"
       md+="![${name%.*}]($raw/$gif)"$'\n'"[Full video: $name]($blob/$name)"$'\n\n' ;;
