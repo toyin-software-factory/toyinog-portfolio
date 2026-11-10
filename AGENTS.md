@@ -65,6 +65,7 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (or `NNNN-title/inde
 - [src/lib/content/AGENTS.md](src/lib/content/AGENTS.md): content loader, schemas, Markdown pipeline and their build time only rules
 - [src/components/ui/AGENTS.md](src/components/ui/AGENTS.md): the base components, token only styling, focus, touch target and test rules
 - [src/components/site/AGENTS.md](src/components/site/AGENTS.md): the site shell (header, nav, footer) and its rules
+- [src/lib/seo/AGENTS.md](src/lib/seo/AGENTS.md): page metadata, share images, JSON-LD and robots by environment
 - [src/lib/contact/AGENTS.md](src/lib/contact/AGENTS.md): the contact form flow (spec 0007), its secrets, dry run and logging rules
 
 _Drafted by /audit from the repo, worth a quick human pass. Edit freely: once a line stops matching this draft, later runs treat it as curated and will flag rather than overwrite it._

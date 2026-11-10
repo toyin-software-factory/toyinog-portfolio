@@ -1,7 +1,7 @@
 # 0006. About page and CV download
 
 **Date**: 2026-11-10
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 

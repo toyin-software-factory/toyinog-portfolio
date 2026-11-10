@@ -20,7 +20,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 4 | Design system & UI foundation | Foundation | done |
 | 5 | Site shell & Home | Release 1 | done |
 | 6 | Work list & case studies | Release 1 | done |
-| 7 | About & CV | Release 1 | in-progress |
+| 7 | About & CV | Release 1 | done |
 | 8 | Contact form | Release 1 | done |
 | 9 | SEO & social sharing | Release 2 | in-progress |
 | 10 | Visitor analytics | Release 2 | in-progress |
@@ -104,7 +104,7 @@ A list of projects and one case study page per project, generated from the conte
 - [x] Document it: `/document work list & case studies`
 Spec [0005](../specs/0005-work-case-studies.md) · code in `src/app/work/`, `src/app/sitemap.ts` · verify report [docs/reviews/2026-11-10-verify-work-case-studies.md](../reviews/2026-11-10-verify-work-case-studies.md)
 
-### 7. About & CV · in-progress
+### 7. About & CV · done
 Bio, experience, skills and a CV download, for hiring managers who want the full picture.
 **Done when:** the About page renders bio, experience and skills from the content files, and the CV downloads as a PDF from a stable link.
 - [x] Design it (spec): `/architect about & cv`
@@ -114,7 +114,7 @@ Bio, experience, skills and a CV download, for hiring managers who want the full
    - [x] Sitemap, axe, static check (AC-6, AC-7)
 - [x] Verify it: `/check verify about & cv`
 - [x] Test it: `/test about & cv`
-- [ ] Review it: CodeRabbit on the PR
+- [x] Review it: CodeRabbit on the PR (#32)
 - [x] Document it: `/document about & cv`
 Spec [0006](../specs/0006-about-cv.md) · code in `src/app/about/`, `src/lib/format/` · verify report [docs/reviews/2026-11-10-verify-about-cv.md](../reviews/2026-11-10-verify-about-cv.md)
 
@@ -140,15 +140,15 @@ Spec [0007](../specs/0007-contact-form.md) · code in `src/app/contact/`, `src/l
 Page titles and descriptions, social share cards, a sitemap and robots file, and structured data about Toyin, so the site is found and shares well.
 **Done when:** every public page has a unique title, description and share image, the sitemap lists every page including case studies, and share previews render correctly.
 - [x] Design it (spec): `/architect seo & social sharing`
-- [ ] Build it: `/develop seo & social sharing`
-   - [ ] Canonical, titles, Open Graph and default share image (AC-1..3)
-   - [ ] JSON-LD Person, WebSite, CreativeWork (AC-4)
-   - [ ] robots by environment, sitemap, icons, sitemap wide check (AC-5..8)
-- [ ] Verify it: `/check verify seo & social sharing`
-- [ ] Test it: `/test seo & social sharing`
+- [x] Build it: `/develop seo & social sharing`
+   - [x] Canonical, titles, Open Graph and default share image (AC-1..3)
+   - [x] JSON-LD Person, WebSite, CreativeWork (AC-4)
+   - [x] robots by environment, sitemap, icons, sitemap wide check (AC-5..8)
+- [x] Verify it: `/check verify seo & social sharing`
+- [x] Test it: `/test seo & social sharing`
 - [ ] Review it: CodeRabbit on the PR
-- [ ] Document it: `/document seo & social sharing`
-Spec [0008](../specs/0008-seo-social-sharing.md)
+- [x] Document it: `/document seo & social sharing`
+Spec [0008](../specs/0008-seo-social-sharing.md) · code in `src/lib/seo/`, `src/components/seo/`, page metadata exports · verify report [docs/reviews/2026-11-10-verify-seo-social-sharing.md](../reviews/2026-11-10-verify-seo-social-sharing.md)
 
 ### 10. Visitor analytics · in-progress
 Privacy friendly, cookie free analytics: page views, referrers, and a contact form conversion event. No cookie banner needed.
