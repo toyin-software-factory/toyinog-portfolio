@@ -4,6 +4,7 @@ import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 
 import { creativeWorkJsonLd, personJsonLd, serializeJsonLd, websiteJsonLd } from "./jsonLd";
+import { isIndexable, NOINDEX_HEADER } from "./indexing";
 import { pageMetadata } from "./metadata";
 import { absoluteUrl, DEFAULT_SHARE_IMAGE, DESCRIPTION_MAX, SITE_NAME } from "./site";
 
@@ -126,9 +127,9 @@ describe("robots.txt by environment (spec 0008 AC-5)", () => {
     });
   });
 
-  it("disallows everything in previews", () => {
+  it("allows crawling but lists no sitemap in previews, so crawlers can read noindex", () => {
     vi.stubEnv("APP_ENV", "preview");
-    expect(robots()).toEqual({ rules: { userAgent: "*", disallow: "/" } });
+    expect(robots()).toEqual({ rules: { userAgent: "*", allow: "/" } });
   });
 });
 
@@ -140,5 +141,16 @@ describe("sitemap (spec 0008 AC-6)", () => {
     expect(paths).not.toContain("/contact/sent");
     expect(paths).not.toContain("/styleguide");
     for (const entry of entries) expect(entry.lastModified).toBeInstanceOf(Date);
+  });
+});
+
+describe("isIndexable (spec 0008 AC-5)", () => {
+  it("is true for production only", () => {
+    expect(isIndexable("production")).toBe(true);
+    expect(isIndexable("preview")).toBe(false);
+  });
+
+  it("names the noindex header", () => {
+    expect(NOINDEX_HEADER).toEqual({ key: "X-Robots-Tag", value: "noindex" });
   });
 });

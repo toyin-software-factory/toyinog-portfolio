@@ -8,6 +8,7 @@ import { Header } from "@/components/site/Header";
 import { SkipLink } from "@/components/ui";
 import { BUILD_YEAR, SHELL_PROFILE } from "@/lib/content/generated/shell-profile";
 import { getAppEnv } from "@/lib/env";
+import { isIndexable } from "@/lib/seo/indexing";
 import { DEFAULT_SHARE_IMAGE } from "@/lib/seo/site";
 import { SITE_URL } from "@/lib/site";
 
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", images: [{ ...DEFAULT_SHARE_IMAGE }] },
   // Previews live on public workers.dev URLs: keep them out of search (spec 0008 AC-5).
-  ...(getAppEnv() === "production" ? {} : { robots: { index: false } }),
+  ...(isIndexable(getAppEnv()) ? {} : { robots: { index: false } }),
 };
 
 /** The site shell (spec 0004): skip link, header, main and footer around every page. */

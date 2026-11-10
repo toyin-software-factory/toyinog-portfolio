@@ -1,6 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
 import { getAppEnv } from "../../src/lib/env";
+import { isIndexable } from "../../src/lib/seo/indexing";
 
 /**
  * Spec 0008 AC-8: every URL in the sitemap gets checked for AC-1 to AC-4. The
@@ -10,7 +11,7 @@ import { getAppEnv } from "../../src/lib/env";
  */
 
 const SITE = "https://toyinog.com";
-const isProduction = getAppEnv() === "production";
+const indexable = isIndexable(getAppEnv());
 
 type PageSeo = {
   path: string;
@@ -20,6 +21,8 @@ type PageSeo = {
   og: Record<string, string>;
   twitterCard: string | null;
   robots: string | null;
+  /** The X-Robots-Tag response header, if any. */
+  robotsHeader: string | null;
   jsonLd: unknown[];
 };
 
@@ -28,6 +31,7 @@ async function readSeo(page: Page, path: string): Promise<PageSeo> {
   expect(response?.status(), `${path} status`).toBe(200);
   return {
     path,
+    robotsHeader: response?.headers()["x-robots-tag"] ?? null,
     title: await page.title(),
     ...(await page.evaluate(() => {
       const meta = (selector: string) =>
@@ -117,18 +121,15 @@ test.describe("sitemap and robots (spec 0008 AC-5, AC-6)", () => {
     expect(xml.match(/<lastmod>/g)?.length).toBe(sitemapPaths.length);
   });
 
-  test(`robots.txt ${isProduction ? "allows indexing" : "blocks indexing"} in this build`, async ({
+  test(`robots.txt ${indexable ? "allows indexing and lists the sitemap" : "allows crawling with no sitemap"} in this build`, async ({
     request,
   }) => {
     const body = await (await request.get("/robots.txt")).text();
-    if (isProduction) {
-      expect(body).toContain("Allow: /");
-      expect(body).toContain(`Sitemap: ${SITE}/sitemap.xml`);
-      expect(body).not.toContain("Disallow: /");
-    } else {
-      expect(body).toContain("Disallow: /");
-      expect(body).not.toContain("Allow: /");
-    }
+    // Never Disallow: crawlers have to read the pages to see their noindex (AC-5).
+    expect(body).toContain("Allow: /");
+    expect(body).not.toContain("Disallow:");
+    if (indexable) expect(body).toContain(`Sitemap: ${SITE}/sitemap.xml`);
+    else expect(body).not.toContain("Sitemap:");
   });
 
   test("/contact/sent stays out of search", async ({ request }) => {
@@ -185,9 +186,14 @@ test.describe("every sitemap page (spec 0008 AC-8)", () => {
         expect(seo.og["og:image:width"], where).toBe("1200");
         expect(seo.og["og:image:height"], where).toBe("630");
       }
-      // AC-5: previews are noindex; production pages are indexable.
-      if (isProduction) expect(seo.robots, where).toBeNull();
-      else expect(seo.robots, where).toContain("noindex");
+      // AC-5: previews say noindex in a meta tag and an X-Robots-Tag header; production says neither.
+      if (indexable) {
+        expect(seo.robots, where).toBeNull();
+        expect(seo.robotsHeader, `X-Robots-Tag ${where}`).toBeNull();
+      } else {
+        expect(seo.robots, where).toContain("noindex");
+        expect(seo.robotsHeader, `X-Robots-Tag ${where}`).toBe("noindex");
+      }
       // AC-4: JSON-LD.
       const types = nodes(seo.jsonLd).map((node) => node["@type"]);
       if (seo.path === "/") expect(types, where).toEqual(["WebSite", "Person"]);
@@ -204,11 +210,11 @@ test.describe("every sitemap page (spec 0008 AC-8)", () => {
 
     // Logged for the PR proof.
     console.log(
-      `[seo] ${isProduction ? "production" : "preview"} build, ${String(pages.length)} sitemap pages checked:\n` +
+      `[seo] ${indexable ? "production" : "preview"} build, ${String(pages.length)} sitemap pages checked:\n` +
         pages
           .map(
             (seo) =>
-              `  ${seo.path}  "${seo.title}"  (${String(seo.description.length)} chars)  og:image ${new URL(seo.og["og:image"] ?? "").pathname} ${seo.og["og:image:width"] ?? "?"}x${seo.og["og:image:height"] ?? "?"}  json-ld ${
+              `  ${seo.path}  "${seo.title}"  (${String(seo.description.length)} chars)  og:image ${new URL(seo.og["og:image"] ?? "").pathname} ${seo.og["og:image:width"] ?? "?"}x${seo.og["og:image:height"] ?? "?"}  x-robots-tag ${seo.robotsHeader ?? "none"}  json-ld ${
                 nodes(seo.jsonLd)
                   .map((n) => String(n["@type"]))
                   .join("+") || "none"
