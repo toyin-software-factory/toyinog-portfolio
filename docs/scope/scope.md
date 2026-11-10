@@ -17,7 +17,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 1 | Stack & architecture | Foundation | in-progress |
 | 2 | Coding standards & tooling | Foundation | in-progress |
 | 3 | Content model | Foundation | in-progress |
-| 4 | Design system & UI foundation | Foundation | planned |
+| 4 | Design system & UI foundation | Foundation | in-progress |
 | 5 | Site shell & Home | Release 1 | planned |
 | 6 | Work list & case studies | Release 1 | planned |
 | 7 | About & CV | Release 1 | planned |
@@ -57,10 +57,20 @@ The shape of the Markdown content files: projects and case studies, the bio, exp
 - [ ] Document it: `/document content model`
 Spec [0002](../specs/0002-content-model.md)
 
-### 4. Design system & UI foundation · needs a decision
+### 4. Design system & UI foundation · in-progress
 Visual direction from Mobbin references, plus type, colour, spacing and base components, so all four pages feel like one site and meet WCAG AA.
 **Done when:** `design.md` records the direction and its Mobbin references, covers type, colour, spacing and components, and base components handle focus, keyboard and contrast at mobile and desktop widths.
-- [ ] Design it (spec): `/architect design system & UI foundation`
+- [x] Design it (spec): `/architect design system & UI foundation`
+- [ ] Build it: `/develop design system & UI foundation`
+   - [ ] Tokens, fonts and root layout base (AC-1, AC-2, AC-5)
+   - [ ] Layout, text and action components (AC-3, AC-4, AC-8)
+   - [ ] Form primitives (AC-3, AC-4)
+   - [ ] Styleguide route, token guard, axe at both widths (AC-1, AC-6, AC-7)
+- [ ] Verify it: `/check verify design system & UI foundation`
+- [ ] Test it: `/test design system & UI foundation`
+- [ ] Review it: CodeRabbit on the PR
+- [ ] Document it: `/document design system & UI foundation`
+Spec [0003](../specs/0003-design-system.md) · `design.md`
 
 ## Release 1: the smallest usable site
 
@@ -110,6 +120,7 @@ Out of scope for launch, kept so the plan stays honest.
 - **Contact auto reply**: a "thanks, I'll reply soon" email to the sender
 - **Book a call link**: a scheduling link beside the contact form
 - **Motion and visual polish**: page transitions and richer animation
+- **Light mode**: a light theme that follows the visitor's system setting (from spec 0003)
 
 ## Legend
 

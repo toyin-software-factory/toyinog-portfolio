@@ -1,7 +1,7 @@
 # 0001. Next.js on Cloudflare Workers as the portfolio stack
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -73,7 +73,7 @@ wrangler.jsonc, open-next.config.ts, next.config.ts, .nvmrc
 ## Static generation rules
 
 - Content is loaded only at build time. Every content route is statically generated: case study routes export `generateStaticParams` and `dynamicParams = false`, and content routes set `export const dynamic = 'force-static'`. A content route that turns dynamic would try to read `content/` on Workers at runtime and fail. An e2e test checks that every content route is served as prebuilt HTML.
-- The Markdown pipeline (`gray-matter`, `unified`, `remark`, `rehype`) is imported only from build time code paths, so it stays out of the Worker bundle.
+- The Markdown pipeline (`gray-matter`, `unified`, `remark`, `rehype`) is imported only from server code of prerendered routes and never runs at request time. OpenNext still bundles it into the Worker (about 150 KiB gzip, measured in PF-T02), which is accepted. The CI size gate guards the total, and if the bundle nears about 2.5 MiB, move content to a build time JSON step.
 - `open-next.config.ts` uses the static assets incremental cache. There is no R2 and no other cache store.
 - `next.config.ts` calls `initOpenNextCloudflareForDev()`, so bindings work in `next dev`.
 
