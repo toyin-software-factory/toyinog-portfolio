@@ -9,19 +9,8 @@ import { logContact } from "@/lib/contact/log";
 import { TURNSTILE_TEST_SECRET_KEY, verifyTurnstile } from "@/lib/contact/turnstile";
 import { getAppEnv } from "@/lib/env";
 
+import { sendThroughBinding } from "./sendThroughBinding";
 import { SENT_COOKIE } from "./sentCookie";
-
-/** Sends a raw email through the Email Routing binding. */
-async function sendThroughBinding(binding: SendEmail, from: string, to: string, raw: string) {
-  // `cloudflare:email` exists only in the Workers runtime. The `.catch()` makes the
-  // OpenNext bundler leave it for runtime (wrangler resolves `cloudflare:*` modules).
-  const { EmailMessage } = await import(/* webpackIgnore: true */ "cloudflare:email").catch(
-    (error: unknown) => {
-      throw error;
-    },
-  );
-  await binding.send(new EmailMessage(from, to, raw));
-}
 
 /** The contact form's server action (spec 0007). Thin: the flow lives in handleContact. */
 export async function sendContact(
