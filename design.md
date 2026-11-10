@@ -13,6 +13,15 @@ Mobbin references (layout and typography, not colour):
 - Cloudstudio, dark selected work with small labels: https://mobbin.com/sites/sections/48890788-7d16-4887-baaa-5b22583ef055
 - Antimetal, dark hero with a single bright accent: https://mobbin.com/sites/sections/38557cd6-0834-4d5a-b186-89ac968d8332
 
+Site shell and Home references (spec 0004):
+- Runway, header with the name on the left and a few plain text links: https://mobbin.com/sites/sections/754769a3-efe7-48cb-98bb-547e66bfdfee
+- MOUTHWASH Studio, dark minimal nav with no menu button: https://mobbin.com/sites/sections/672c2210-6085-428a-920f-c03f1b5933be
+- Sprint Valley (on Miro), dark hero with a big serif name and "Get in touch": https://mobbin.com/sites/sections/2f52c788-4083-48dd-adcc-84562883bfd9
+- basement.studio, contact call to action with one large heading and one action: https://mobbin.com/sites/sections/a2f3898a-cd70-4d7d-b549-5f5dbb5a9fa6
+- Steep, serif call to action heading with a primary button: https://mobbin.com/sites/sections/5352176e-b2bd-46f1-b0f3-6de8bee4058b
+- Vucko, footer with links, socials, back to top and copyright: https://mobbin.com/sites/sections/325d9889-5eae-493d-926a-a959e8e99005
+- Garden, a minimal 404 message inside the site shell: https://mobbin.com/sites/sections/40e8ba24-cbb3-4a8d-af53-82df888230cf
+
 ## Colour
 
 Toyin's palette: Dust Grey `#D6D6D6`, Bright Lemon `#FFEE32`, Bright Amber `#FFD100`, Carbon Black `#202020`, Graphite `#333533`. Three helper greys and an error red were added only to meet WCAG AA.

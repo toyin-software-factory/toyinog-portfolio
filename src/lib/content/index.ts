@@ -6,6 +6,7 @@ import { type ContentSnapshot, loadContent } from "./load";
 import type { About, Profile, Project } from "./schema";
 
 export { ContentError, type ContentProblem } from "./errors";
+export { firstParagraphText } from "./text";
 export type {
   About,
   Availability,
