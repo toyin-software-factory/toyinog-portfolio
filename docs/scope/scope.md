@@ -155,13 +155,13 @@ Privacy friendly, cookie free analytics: page views, referrers, and a contact fo
 **Done when:** page views and contact submissions show in the analytics dashboard, no cookies are set, and the script does not hurt page performance.
 - [x] Design it (spec): `/architect visitor analytics`
 - [ ] Build it: `/develop visitor analytics`
-   - [ ] Production only beacon in the layout (AC-1, AC-2, AC-5)
+   - [x] Production only beacon in the layout (AC-1, AC-2, AC-5)
    - [ ] No cookies, CSP and performance checks (AC-3, AC-4, AC-6)
 - [ ] Verify it: `/check verify visitor analytics`
 - [ ] Test it: `/test visitor analytics`
 - [ ] Review it: CodeRabbit on the PR
 - [ ] Document it: `/document visitor analytics`
-Spec [0009](../specs/0009-visitor-analytics.md)
+Spec [0009](../specs/0009-visitor-analytics.md) · code in `src/components/site/Analytics.tsx`, `tests/e2e/analytics.spec.ts`
 
 ### 11. Real content & go live · needs a decision
 Toyin replaces the placeholder content with the real bio, case studies and CV, then toyinog.com points at the new site and the old toyinog-website is retired.
