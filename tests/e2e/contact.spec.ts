@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
+import { E2E_PRODUCTION, PROD_ENV_TAG } from "./env";
+
 const WCAG_AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 const expectNoAxeViolations = async (page: Page) => {
@@ -157,3 +159,28 @@ test("the sitemap lists /contact but not /contact/sent (AC-10)", async ({ reques
   expect(sitemap).toContain("<loc>https://toyinog.com/contact</loc>");
   expect(sitemap).not.toContain("/contact/sent");
 });
+
+test(
+  "a valid submit never sends from a test build: preview dry runs, production without an inbox shows the fallback (AC-8, AC-9)",
+  { tag: PROD_ENV_TAG },
+  async ({ page }) => {
+    await page.goto("/contact");
+    await fillValidForm(page);
+    await waitForTurnstile(page);
+    await page.getByRole("button", { name: "Send message" }).click();
+
+    if (E2E_PRODUCTION) {
+      // CONTACT_TO_EMAIL is empty in .dev.vars, so the production path stops before the send.
+      // Scoped to the form: Next's route announcer is an alert too.
+      const alert = page.locator("form").getByRole("alert");
+      await expect(alert).toContainText(
+        "Sorry, something went wrong sending your message. Please email me directly at",
+      );
+      await expect(alert).toBeFocused();
+      await expect(page).toHaveURL(/\/contact$/);
+      await expect(page.getByLabel("Name")).not.toHaveValue("");
+    } else {
+      await expect(page).toHaveURL(/\/contact\/sent$/);
+    }
+  },
+);
