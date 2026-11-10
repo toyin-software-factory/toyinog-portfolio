@@ -19,7 +19,7 @@ Scope feature 10. Toyin chose Cloudflare Web Analytics (Stack Q5): free, cookie 
 - **AC-3**: The beacon sets no cookies and no local storage (checked in a production style e2e run with a dummy token, inspecting the browser context).
 - **AC-4**: The CSP allows the beacon and its reporting endpoint, and no CSP violations are logged on any page.
 - **AC-5**: `/contact/sent` page views are the conversion metric. No other custom tracking is added.
-- **AC-6**: Mobile Lighthouse performance on Home stays at 90 or above with the beacon present (checked once on the Workers preview using a production style build, and recorded in the PR).
+- **AC-6**: Mobile Lighthouse performance on Home stays at 90 or above with the beacon present (checked on a local production style `pnpm preview` with a dummy token, so the beacon is present, alongside the Workers preview without it for comparison, both recorded in the PR; previews always run as `preview` and have no token). It's checked again on toyinog.com at go live.
 
 ## Options considered
 
@@ -65,5 +65,7 @@ Keeping the beacon in code makes the production only rule testable and reviewabl
 **Negative / tradeoffs**: no custom events. The hiring vs project split isn't visible in analytics (it's in the emails). Ad blockers hide some visits.
 
 ## Follow-up
+
+- [ ] At go live (feature 11): run Lighthouse mobile on toyinog.com with the real beacon and confirm AC-6.
 
 - [ ] Toyin creates the Web Analytics site and token at go live.
