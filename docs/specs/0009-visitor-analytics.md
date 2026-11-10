@@ -1,7 +1,7 @@
 # 0009. Cookie free visitor analytics with Cloudflare Web Analytics
 
 **Date**: 2026-11-10
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

@@ -39,6 +39,7 @@ Missing: none. Not applied: none.
 
 ## Notes for review
 
+- **Found later by spec 0009 AC-4 (RLR-T02)**: `/contact` logged a CSP violation (`script-src` blocked `eval`): zod 4's one time `Function("")` probe, in the browser because `ContactForm.tsx` imported constants from `schema.ts`. Fixed by moving them to the zod free `src/lib/contact/fields.ts`, guarded by `noZodInClient.test.ts`.
 - **Cookie gate moved to middleware**: after #25 the root layout reads `content/` on every render, and Workers can't do that at request time, so the dynamic `/contact/sent` returned 500. The page is now static and `src/middleware.ts` (edge middleware, approved by the lead) does the gate. When Next renders the page inside the action's response, the cookie is cleared on the next request instead (locally a reload shows the page once more; on the preview it already went straight to `/contact`). The e2e test accepts both.
 
 - **Honeypot landing**: a bot that fills the honeypot is redirected to `/contact/sent` (AC-4) but gets no cookie, so that page sends it back to `/contact`. That follows AC-10's "after a real send". If you'd rather bots see the thank you page, the action can set the cookie for honeypot hits too.

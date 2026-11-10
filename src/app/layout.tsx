@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { Analytics } from "@/components/site/Analytics";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { SkipLink } from "@/components/ui";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           {children}
         </main>
         <Footer profile={SHELL_PROFILE} year={BUILD_YEAR} />
+        <Analytics />
       </body>
     </html>
   );
