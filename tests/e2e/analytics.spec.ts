@@ -1,16 +1,15 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { DUMMY_ANALYTICS_TOKEN, E2E_PRODUCTION } from "./env";
+
 /**
- * Visitor analytics (spec 0009). CI runs this as a preview build: no beacon anywhere.
- * The production style run is the same file against a production build with a dummy token:
- *
- *   APP_ENV=production NEXT_PUBLIC_CF_ANALYTICS_TOKEN=<dummy> pnpm exec playwright test analytics
- *
- * (stop any running `pnpm preview` first so Playwright builds with those values).
+ * Visitor analytics (spec 0009). Environment aware: `pnpm test:e2e` (a preview build)
+ * checks there is no beacon; `pnpm test:e2e:production` (a production style build with a
+ * dummy token) checks there is exactly one. CI runs both.
  */
 const BEACON = "https://static.cloudflareinsights.com/beacon.min.js";
-const token = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN?.trim() ?? "";
-const isProductionStyle = process.env.APP_ENV === "production" && token !== "";
+const token = DUMMY_ANALYTICS_TOKEN;
+const isProductionStyle = E2E_PRODUCTION;
 
 const PAGES = ["/", "/work", "/about", "/contact", "/does-not-exist"];
 

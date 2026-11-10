@@ -86,3 +86,45 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
+
+  # Production only behaviour (the analytics beacon, robots and the sitemap wide SEO check)
+  # against a production style build: APP_ENV=production, a dummy analytics token and the
+  # Turnstile test keys, all set by playwright.config.ts. Only the environment aware specs
+  # run (tests/e2e/env.ts). The contact action can't send: CONTACT_TO_EMAIL stays empty.
+  e2e-production:
+    name: e2e (production style)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6 # version comes from package.json packageManager
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Local Worker vars (test values only, no inbox)
+        run: |
+          cp .dev.vars.example .dev.vars
+          grep -qx 'CONTACT_TO_EMAIL=' .dev.vars || { echo "::error::CONTACT_TO_EMAIL must stay empty in CI"; exit 1; }
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End to end tests (production style build, Workers runtime)
+        run: pnpm test:e2e:production
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-production
+          path: playwright-report/
+          retention-days: 14
