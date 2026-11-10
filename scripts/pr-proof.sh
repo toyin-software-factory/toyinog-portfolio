@@ -38,14 +38,18 @@ declare -A used=()
 n=0
 for f in "$@"; do
   n=$((n + 1))
-  name="$(basename "$f")"
-  # Two inputs with the same file name (desktop/shot.png, phone/shot.png) get a numbered prefix instead of overwriting.
-  [ -n "${used[$name]:-}" ] && name="$n-$name"
+  # Published names use only URL-safe characters, so the printed links need no encoding.
+  name="$(basename "$f" | tr -c 'A-Za-z0-9._\n-' '-')"
+  # A name already taken in this run (desktop/shot.png and phone/shot.png, or a video's GIF preview)
+  # gets a numbered prefix instead of overwriting.
+  while [ -n "${used[$name]:-}" ]; do name="$n-$name"; done
   used[$name]=1
   cp "$f" "$tree/$id/$name"
   case "${name,,}" in
     *.webm|*.mp4|*.mov)
       gif="${name%.*}.gif"
+      while [ -n "${used[$gif]:-}" ]; do gif="$n-$gif"; done
+      used[$gif]=1
       ffmpeg -loglevel error -y -i "$f" -vf "fps=8,scale=800:-1:flags=lanczos" -loop 0 "$tree/$id/$gif"
       md+="![${name%.*}]($raw/$gif)"$'\n'"[Full video: $name]($blob/$name)"$'\n\n' ;;
     *) md+="![${name%.*}]($raw/$name)"$'\n\n' ;;
