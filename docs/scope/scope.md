@@ -24,7 +24,7 @@ _These are recommendations to keep the build orderly, not requirements. Skip any
 | 8 | Contact form | Release 1 | done |
 | 9 | SEO & social sharing | Release 2 | in-progress |
 | 10 | Visitor analytics | Release 2 | in-progress |
-| 11 | Real content & go live | Release 2 | planned |
+| 11 | Real content & go live | Release 2 | in-progress |
 
 ## Foundations
 
@@ -163,10 +163,20 @@ Privacy friendly, cookie free analytics: page views, referrers, and a contact fo
 - [x] Document it: `/document visitor analytics`
 Spec [0009](../specs/0009-visitor-analytics.md) · code in `src/components/site/Analytics.tsx`, `tests/e2e/analytics.spec.ts`
 
-### 11. Real content & go live · needs a decision
+### 11. Real content & go live · in-progress
 Toyin replaces the placeholder content with the real bio, case studies and CV, then toyinog.com points at the new site and the old toyinog-website is retired.
 **Done when:** no placeholder content remains, toyinog.com serves the new site over HTTPS, old URLs that mattered redirect sensibly, and a final accessibility and mobile performance check passes.
-- [ ] Design it (spec): `/architect real content & go live`
+- [x] Design it (spec): `/architect real content & go live`
+- [ ] Build it: `/develop real content & go live`
+   - [ ] Launch guards: placeholder and size checks in every build, hidden from search until launch (AC-1, AC-1b, AC-1c)
+   - [ ] Real content drafted from Toyin's material and approved on the preview (AC-2 to AC-5)
+   - [ ] Pre launch checks and the launch report (AC-6)
+   - [ ] Toyin's go, the go live PR, and the live smoke check (AC-7 to AC-11)
+- [ ] Verify it: `/check verify real content & go live`
+- [ ] Test it: `/test real content & go live`
+- [ ] Review it: CodeRabbit on the PRs
+- [ ] Document it: `/document real content & go live`
+Spec [0010](../specs/0010-real-content-go-live.md)
 
 ## Deferred
 Out of scope for launch, kept so the plan stays honest.
