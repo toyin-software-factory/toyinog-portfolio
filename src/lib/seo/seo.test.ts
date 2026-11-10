@@ -6,7 +6,13 @@ import sitemap from "@/app/sitemap";
 import { creativeWorkJsonLd, personJsonLd, serializeJsonLd, websiteJsonLd } from "./jsonLd";
 import { isIndexable, NOINDEX_HEADER } from "./indexing";
 import { pageMetadata } from "./metadata";
-import { absoluteUrl, DEFAULT_SHARE_IMAGE, DESCRIPTION_MAX, SITE_NAME } from "./site";
+import {
+  absoluteUrl,
+  DEFAULT_SHARE_IMAGE,
+  DESCRIPTION_MAX,
+  SITE_LAUNCHED,
+  SITE_NAME,
+} from "./site";
 
 const person = {
   name: "Ada Lovelace",
@@ -119,12 +125,25 @@ describe("robots.txt by environment (spec 0008 AC-5)", () => {
     vi.unstubAllEnvs();
   });
 
-  it("allows everything and points at the sitemap in production", () => {
+  it("lists no sitemap in production before launch (spec 0010 AC-1c)", () => {
     vi.stubEnv("APP_ENV", "production");
-    expect(robots()).toEqual({
+    expect(robots()).toEqual({ rules: { userAgent: "*", allow: "/" } });
+  });
+
+  it("allows everything and points at the sitemap in production once launched", async () => {
+    vi.stubEnv("APP_ENV", "production");
+    vi.resetModules();
+    vi.doMock("./site", async (original) => ({
+      ...(await original<object>()),
+      SITE_LAUNCHED: true,
+    }));
+    const { default: launchedRobots } = await import("@/app/robots");
+    expect(launchedRobots()).toEqual({
       rules: { userAgent: "*", allow: "/" },
       sitemap: "https://toyinog.com/sitemap.xml",
     });
+    vi.doUnmock("./site");
+    vi.resetModules();
   });
 
   it("allows crawling but lists no sitemap in previews, so crawlers can read noindex", () => {
@@ -145,9 +164,16 @@ describe("sitemap (spec 0008 AC-6)", () => {
 });
 
 describe("isIndexable (spec 0008 AC-5)", () => {
-  it("is true for production only", () => {
-    expect(isIndexable("production")).toBe(true);
-    expect(isIndexable("preview")).toBe(false);
+  it("is true only for a launched production build (spec 0010 AC-1c)", () => {
+    expect(isIndexable("production", true)).toBe(true);
+    expect(isIndexable("production", false)).toBe(false);
+    expect(isIndexable("preview", true)).toBe(false);
+    expect(isIndexable("preview", false)).toBe(false);
+  });
+
+  it("keeps production out of search until launch", () => {
+    expect(SITE_LAUNCHED).toBe(false);
+    expect(isIndexable("production")).toBe(false);
   });
 
   it("names the noindex header", () => {

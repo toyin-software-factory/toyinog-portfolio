@@ -35,11 +35,11 @@ function fixtureRoot(changes: Record<string, string> = {}): string {
   return root;
 }
 
-function runGenerate(cwd: string) {
+function runGenerate(cwd: string, appEnv: "preview" | "production" = "preview") {
   const result = spawnSync(TSX, ["--tsconfig", path.join(REPO, "tsconfig.json"), SCRIPT], {
     cwd,
     encoding: "utf8",
-    env: { ...process.env, APP_ENV: "preview", WORKERS_CI_BRANCH: "" },
+    env: { ...process.env, APP_ENV: appEnv, WORKERS_CI_BRANCH: "" },
   });
   return { code: result.status, out: result.stdout, err: result.stderr };
 }
@@ -89,7 +89,7 @@ describe("content:generate script", { timeout: 30_000 }, () => {
     expect(out).toContain(`Wrote ${SHELL_PROFILE_MODULE_PATH}`);
     const source = readFileSync(path.join(root, SHELL_PROFILE_MODULE_PATH), "utf8");
     expect(source).toContain('"name": "Fixture Person"');
-    expect(source).toContain('"email": "fixture@example.com"');
+    expect(source).toContain('"email": "fixture@fixture.test"');
     expect(source).toContain(`BUILD_YEAR: number = ${String(new Date().getFullYear())}`);
     // Nothing beyond the shell's fields.
     expect(source).not.toContain("availability");
@@ -104,5 +104,22 @@ describe("content:generate script", { timeout: 30_000 }, () => {
     expect(err).toContain("Fix them and build again.");
     expect(err).toContain("content/work/alpha.md\n  - year: should be a number");
     expect(existsSync(path.join(root, SHELL_PROFILE_MODULE_PATH))).toBe(false);
+  });
+
+  // content:generate is the first step of `pnpm build`, so this is a production build failing.
+  it("stops a production build on placeholder content, and lets a preview build through (spec 0010 AC-1)", () => {
+    const alpha = readFileSync(path.join(FIXTURES, "valid/content/work/alpha.md"), "utf8");
+    const changes = {
+      "content/work/alpha.md": alpha.replace(/title: "[^"]*"/, 'title: "Placeholder title"'),
+    };
+
+    const production = runGenerate(fixtureRoot(changes), "production");
+    expect(production.code).toBe(1);
+    expect(production.err).toContain('content/work/alpha.md\n  - title: contains "placeholder"');
+
+    const previewRoot = fixtureRoot(changes);
+    const preview = runGenerate(previewRoot, "preview");
+    expect(preview.code).toBe(0);
+    expect(existsSync(path.join(previewRoot, SHELL_PROFILE_MODULE_PATH))).toBe(true);
   });
 });

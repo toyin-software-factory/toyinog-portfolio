@@ -18,7 +18,7 @@ Fixture.
 
 ## What I did
 
-Fixture with an [external link](https://example.com).
+Fixture with an [external link](https://fixture.test).
 
 ## Outcome
 

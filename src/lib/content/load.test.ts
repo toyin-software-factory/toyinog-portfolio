@@ -56,7 +56,7 @@ describe("loadContent: valid content", () => {
       year: 2021,
       tags: ["Testing"],
       cover: { src: "/images/work/alpha.svg", alt: "Cover for Alpha" },
-      links: [{ label: "Live site", url: "https://example.com/alpha" }],
+      links: [{ label: "Live site", url: "https://fixture.test/alpha" }],
       featured: true,
       draft: false,
       order: 2,
@@ -79,8 +79,8 @@ describe("loadContent: valid content", () => {
       headline: "Fixture headline",
       intro: "Fixture intro.",
       availability: "roles",
-      links: { linkedin: "https://example.com/linkedin", github: "https://example.com/github" },
-      email: "fixture@example.com",
+      links: { linkedin: "https://fixture.test/linkedin", github: "https://fixture.test/github" },
+      email: "fixture@fixture.test",
     });
     expect(about.experience.map((entry) => entry.role)).toEqual([
       "Current role",
@@ -311,4 +311,79 @@ describe("loadContent: warnings", () => {
       'content/work/alpha.md: the case study has no "## Outcome" section. Recommended, not required.',
     ]);
   });
+});
+
+describe("loadContent: launch guards (spec 0010 AC-1, AC-1b)", () => {
+  const withPlaceholderAlt = (source: string) =>
+    source.replace(/alt: "[^"]*"/, 'alt: "Placeholder cover"');
+
+  it("fails in production on a marker in a front matter field, listing file and field", () => {
+    const alpha = readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8");
+    const root = fixtureRoot({ "content/work/alpha.md": withPlaceholderAlt(alpha) });
+
+    const error = problemsFor(root, { appEnv: "production" });
+    expect(error.problems).toContainEqual({
+      file: "content/work/alpha.md",
+      field: "cover.alt",
+      message: 'contains "placeholder". Replace it with real content before it goes live',
+    });
+  });
+
+  it("fails in production on a marker in a file name under public/images or public/cv", () => {
+    const root = fixtureRoot({
+      "public/images/work/placeholder-extra.png": "x",
+      "public/cv/example.com.pdf": "x",
+    });
+
+    const files = problemsFor(root, { appEnv: "production" }).problems.map(({ file }) => file);
+    expect(files).toEqual(
+      expect.arrayContaining([
+        "public/images/work/placeholder-extra.png",
+        "public/cv/example.com.pdf",
+      ]),
+    );
+  });
+
+  it("only warns in previews, listing the same hits", () => {
+    const alpha = readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8");
+    const root = fixtureRoot({ "content/work/alpha.md": withPlaceholderAlt(alpha) });
+
+    const { warnings, projects } = load(root, { appEnv: "preview" });
+    expect(projects.length).toBeGreaterThan(0);
+    expect(warnings.join("\n")).toContain(
+      'content/work/alpha.md · cover.alt: contains "placeholder"',
+    );
+  });
+
+  it("can be asked to only warn in production", () => {
+    const alpha = readFileSync(path.join(VALID, "content/work/alpha.md"), "utf8");
+    const root = fixtureRoot({ "content/work/alpha.md": withPlaceholderAlt(alpha) });
+    expect(() => load(root, { appEnv: "production", placeholders: "warn" })).not.toThrow();
+  });
+
+  it("passes clean fixture content in production", () => {
+    expect(() => load(fixtureRoot(), { appEnv: "production" })).not.toThrow();
+  });
+
+  it.each(["preview", "production"] as const)(
+    "fails on an oversized cover, photo or CV in %s",
+    (appEnv) => {
+      const root = fixtureRoot({
+        "public/images/work/alpha.svg": `<svg xmlns="http://www.w3.org/2000/svg">${"x".repeat(300 * 1024)}</svg>`,
+        "public/images/about/me.svg": `<svg xmlns="http://www.w3.org/2000/svg">${"x".repeat(250 * 1024)}</svg>`,
+        "public/cv/cv.pdf": "x".repeat(5 * 1024 * 1024 + 1),
+      });
+
+      const found = problemsFor(root, { appEnv }).problems.map(
+        ({ file, field }) => `${file} ${field}`,
+      );
+      expect(found).toEqual(
+        expect.arrayContaining([
+          "content/work/alpha.md cover.src",
+          "content/pages/about.md photo.src",
+          "content/pages/about.md cv.file",
+        ]),
+      );
+    },
+  );
 });

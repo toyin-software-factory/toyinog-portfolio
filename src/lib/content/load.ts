@@ -7,6 +7,12 @@ import type { z } from "zod";
 import type { AppEnv } from "@/lib/env";
 
 import { ContentError, type ContentProblem } from "./errors";
+import {
+  type PlaceholderMode,
+  placeholderProblems,
+  type ReadContentFile,
+  sizeProblem,
+} from "./guards";
 import { issuesToProblems } from "./issues";
 import { renderMarkdown } from "./markdown";
 import { type About, createSchemas, type Profile, type Project, SLUG_PATTERN } from "./schema";
@@ -28,6 +34,11 @@ export interface LoadOptions {
   appEnv: AppEnv;
   /** The build machine's current year, for the project year upper bound. */
   currentYear: number;
+  /**
+   * Placeholder text and files (spec 0010 AC-1): `error` fails, `warn` lists them as
+   * warnings. Defaults to `error` in production and `warn` everywhere else.
+   */
+  placeholders?: PlaceholderMode;
 }
 
 export interface ContentSnapshot {
@@ -66,6 +77,16 @@ function yamlReason(error: unknown): string {
   return String(error);
 }
 
+/** Every file under `dir`, as project relative POSIX paths. Empty when the folder is missing. */
+function listFiles(dir: string, rootDir: string): string[] {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const absolute = path.join(dir, entry.name);
+    if (entry.isDirectory()) return listFiles(absolute, rootDir);
+    return entry.isFile() ? [toPosix(path.relative(rootDir, absolute))] : [];
+  });
+}
+
 /**
  * Reads and validates every content file under `rootDir`, applies the collection
  * rules (featured cap, unique slugs, drafts, sort order) and renders the Markdown.
@@ -73,9 +94,12 @@ function yamlReason(error: unknown): string {
  */
 export function loadContent(options: LoadOptions): ContentSnapshot {
   const { rootDir, appEnv, currentYear } = options;
+  const placeholderMode = options.placeholders ?? (appEnv === "production" ? "error" : "warn");
   const publicDir = path.join(rootDir, "public");
   const problems: ContentProblem[] = [];
   const warnings: string[] = [];
+  /** Every content file read, for the placeholder guard. */
+  const readFiles: ReadContentFile[] = [];
 
   const relative = (absolute: string) => toPosix(path.relative(rootDir, absolute));
 
@@ -103,6 +127,7 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
       // Passing options turns off gray-matter's cache, so every read is fresh.
       const parsed = matter(readFileSync(absolute, "utf8"), {});
       const data: unknown = parsed.data;
+      readFiles.push({ file, data, body: parsed.content });
       return { data, body: parsed.content };
     } catch (error) {
       problems.push({
@@ -226,6 +251,36 @@ export function loadContent(options: LoadOptions): ContentSnapshot {
         bioHtml: renderMarkdown(aboutFile.body),
       };
     }
+  }
+
+  // Launch guards (spec 0010). Sizes always fail; placeholders fail in production only.
+  const bytes = (sitePath: string) => statSync(path.join(publicDir, `.${sitePath}`)).size;
+  for (const project of projects) {
+    const file = filesBySlug.get(project.slug) ?? "content/work";
+    problems.push(
+      ...sizeProblem("cover", file, "cover.src", project.cover.src, bytes(project.cover.src)),
+    );
+  }
+  if (about) {
+    const file = relative(aboutPath);
+    problems.push(
+      ...sizeProblem("photo", file, "photo.src", about.photo.src, bytes(about.photo.src)),
+    );
+    problems.push(...sizeProblem("cv", file, "cv.file", about.cv.file, bytes(about.cv.file)));
+  }
+  const publicFiles = ["images", "cv"].flatMap((folder) =>
+    listFiles(path.join(publicDir, folder), rootDir),
+  );
+  const placeholders = placeholderProblems(readFiles, publicFiles);
+  if (placeholderMode === "error") {
+    problems.push(...placeholders);
+  } else if (placeholders.length > 0) {
+    warnings.push(
+      `${String(placeholders.length)} placeholder ${placeholders.length === 1 ? "hit" : "hits"} (a production build fails on these, spec 0010 AC-1):`,
+      ...placeholders.map(
+        ({ file, field, message }) => `  ${file}${field ? ` · ${field}` : ""}: ${message}`,
+      ),
+    );
   }
 
   if (problems.length > 0 || !profile || !about) {
