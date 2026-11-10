@@ -52,12 +52,14 @@ sum="$(cat "${bundles[@]}" | sha256sum | cut -d' ' -f1)"
 if [ "$(cat "$stamp" 2>/dev/null)" != "$sum" ]; then
   split="$(mktemp -d)"
   cat "${bundles[@]}" | awk -v d="$split" '/-----BEGIN CERTIFICATE-----/{n++; f=sprintf("%s/%04d.pem", d, n)} f{print > f} /-----END CERTIFICATE-----/{close(f); f=""}'
+  failed=0
   for c in "$split"/*.pem; do
-    certutil -A -d "$db" -t "C,," -n "sandbox-ca-$(sha256sum "$c" | cut -c1-16)" -i "$c" >/dev/null 2>&1 || true
+    certutil -A -d "$db" -t "C,," -n "sandbox-ca-$(sha256sum "$c" | cut -c1-16)" -i "$c" >/dev/null 2>&1 || failed=$((failed + 1))
   done
-  echo "imported $(ls "$split" | wc -l) CA certificates"
+  echo "imported $(( $(ls "$split" | wc -l) - failed )) CA certificates, $failed failed"
   rm -rf "$split"
-  printf '%s' "$sum" > "$stamp"
+  # Only remember the bundle when every import worked, so a re-run tries again after a failure.
+  if [ "$failed" = 0 ]; then printf '%s' "$sum" > "$stamp"; fi
 fi
 
 echo "== smoke test"
